@@ -3,7 +3,7 @@ import { connect, disconnect } from 'get-starknet';
 import { AccountInterface, Provider } from 'starknet';
 import toast from 'react-hot-toast';
 
-export function useStarknet() {
+export function useStarknet(shouldConnect: boolean = false) {
   const [account, setAccount] = useState<AccountInterface | null>(null);
   const [provider, setProvider] = useState<Provider | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -12,7 +12,7 @@ export function useStarknet() {
     try {
       setIsConnecting(true);
       const starknet = await connect();
-      
+
       if (!starknet) {
         throw new Error('Failed to connect to Starknet');
       }
@@ -56,8 +56,10 @@ export function useStarknet() {
       }
     };
 
-    checkConnection();
-  }, []);
+    if (shouldConnect) {
+      checkConnection();
+    }
+  }, [shouldConnect]);
 
   return {
     account,
