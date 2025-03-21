@@ -1,3 +1,6 @@
+// This script compiles the transfer circuit and writes the compiled code to a file.
+// Usage: pnpm node compile.js output.txt
+
 import { compile, createFileManager } from "@noir-lang/noir_wasm"
 import { writeFile } from 'fs/promises';
 
@@ -14,10 +17,12 @@ import { writeFile } from 'fs/promises';
 	// Get the file path from command-line arguments
 	const outputPath = args[0];
 
+	const transferPath = outputPath + '/transfer.json'
+
 	const fm = createFileManager(import.meta.dirname + '/../../circuits/transfer/');
 	const myCompiledCode = await compile(fm);
-	await writeFile(outputPath, JSON.stringify(myCompiledCode));
+	await writeFile(transferPath, JSON.stringify(myCompiledCode));
 
 	console.log();
-	console.log('\x1b[32m%s\x1b[0m', 'Written to ' + outputPath);  //cyan
+	console.log('\x1b[32m%s\x1b[0m', 'Written to ' + transferPath);  //cyan
 })();
