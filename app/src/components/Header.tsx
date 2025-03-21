@@ -2,10 +2,8 @@ import React from 'react';
 import { Lock } from 'lucide-react';
 import { useStarknet } from '../hooks/useStarknet';
 
-const SHOULD_CONNECT = true;
-
 export function Header() {
-  const { isConnected, isConnecting, connect, disconnect, account } = useStarknet(SHOULD_CONNECT);
+  const { isConnected, isConnecting, connect, disconnect, account } = useStarknet();
 
   return (
     <header className="bg-gray-900 text-white py-4 px-6">
@@ -25,10 +23,10 @@ export function Header() {
             onClick={isConnected ? disconnect : connect}
             disabled={isConnecting}
             className={`px-4 py-2 rounded-lg transition-colors ${isConnecting
-                ? 'bg-gray-500 cursor-not-allowed'
-                : isConnected
-                  ? 'bg-red-600 hover:bg-red-700'
-                  : 'bg-blue-600 hover:bg-blue-700'
+              ? 'bg-gray-500 cursor-not-allowed'
+              : isConnected
+                ? 'bg-red-600 hover:bg-red-700'
+                : 'bg-blue-600 hover:bg-blue-700'
               }`}
           >
             {isConnecting ? 'Connecting...' : isConnected ? 'Disconnect' : 'Connect Wallet'}

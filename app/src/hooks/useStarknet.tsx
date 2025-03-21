@@ -1,11 +1,33 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState, ReactNode } from 'react';
 import { connect, disconnect } from 'get-starknet';
-import { AccountInterface, Provider } from 'starknet';
+import { AccountInterface, RpcProvider } from 'starknet';
 import toast from 'react-hot-toast';
 
-export function useStarknet(shouldConnect: boolean = false) {
+// Create a context to hold our Starknet state
+interface StarknetContextType {
+  account: AccountInterface | null;
+  provider: RpcProvider | null;
+  isConnecting: boolean;
+  isConnected: boolean;
+  connect: () => Promise<void>;
+  disconnect: () => Promise<void>;
+}
+
+const StarknetContext = createContext<StarknetContextType | undefined>(undefined);
+
+// Provider props interface
+interface StarknetProviderProps {
+  children: ReactNode;
+  autoConnect?: boolean;
+}
+
+// StarknetProvider component that will wrap your app
+export function StarknetProvider({
+  children,
+  autoConnect = false
+}: StarknetProviderProps) {
   const [account, setAccount] = useState<AccountInterface | null>(null);
-  const [provider, setProvider] = useState<Provider | null>(null);
+  const [provider, setProvider] = useState<RpcProvider | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
 
   const handleConnect = useCallback(async () => {
@@ -46,7 +68,7 @@ export function useStarknet(shouldConnect: boolean = false) {
   useEffect(() => {
     const checkConnection = async () => {
       try {
-        const starknet = await connect({ showList: false });
+        const starknet = await connect({ modalMode: 'neverAsk' });
         if (starknet?.isConnected) {
           setAccount(starknet.account);
           setProvider(starknet.provider);
@@ -56,12 +78,12 @@ export function useStarknet(shouldConnect: boolean = false) {
       }
     };
 
-    if (shouldConnect) {
+    if (autoConnect) {
       checkConnection();
     }
-  }, [shouldConnect]);
+  }, [autoConnect]);
 
-  return {
+  const contextValue: StarknetContextType = {
     account,
     provider,
     isConnecting,
@@ -69,4 +91,21 @@ export function useStarknet(shouldConnect: boolean = false) {
     connect: handleConnect,
     disconnect: handleDisconnect,
   };
+
+  return (
+    <StarknetContext.Provider value={contextValue} >
+      {children}
+    </StarknetContext.Provider>
+  );
+}
+
+// Custom hook to use the Starknet context
+export function useStarknet() {
+  const context = useContext(StarknetContext);
+
+  if (context === undefined) {
+    throw new Error('useStarknet must be used within a StarknetProvider');
+  }
+
+  return context;
 }
