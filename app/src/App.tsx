@@ -5,6 +5,7 @@ import { OnboardTab } from './components/OnboardTab';
 import { TransferTab } from './components/TransferTab';
 import { Toaster } from 'react-hot-toast';
 import { StarknetProvider } from './hooks/useStarknet';
+import ProofPlayground from './components/NoirPlayground';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'onboard' | 'transfer'>('onboard');
@@ -20,6 +21,7 @@ function App() {
 
           <div className="mt-6">
             {activeTab === 'onboard' ? <OnboardTab /> : <TransferTab />}
+            <ProofPlayground />
           </div>
         </main>
       </div>
