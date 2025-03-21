@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@aztec/bb.js": "0.72.1",
+    "@noir-lang/acvm_js": "1.0.0-beta.3",
     "@noir-lang/noir_js": "1.0.0-beta.2",
     "@noir-lang/noir_wasm": "1.0.0-beta.2",
+    "@noir-lang/noirc_abi": "1.0.0-beta.3",
     "clsx": "^2.1.0",
     "get-starknet": "^3.0.1",
     "lucide-react": "^0.344.0",
@@ -36,6 +38,7 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
     "vite": "^6.2.2",
-    "vite-plugin-top-level-await": "^1.5.0"
+    "vite-plugin-top-level-await": "^1.5.0",
+    "vite-plugin-wasm": "^3.4.1"
   }
 }
