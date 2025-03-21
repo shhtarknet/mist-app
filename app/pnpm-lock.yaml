@@ -8,15 +8,15 @@ importers:
 
   .:
     dependencies:
-      '@noir-lang/backend_barretenberg':
-        specifier: ^0.24.0
-        version: 0.24.0
+      '@aztec/bb.js':
+        specifier: 0.72.1
+        version: 0.72.1
       '@noir-lang/noir_js':
-        specifier: ^0.24.0
-        version: 0.24.0
-      '@noir-lang/types':
-        specifier: ^0.24.0
-        version: 0.24.0
+        specifier: 1.0.0-beta.2
+        version: 1.0.0-beta.2
+      '@noir-lang/noir_wasm':
+        specifier: 1.0.0-beta.2
+        version: 1.0.0-beta.2
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
@@ -92,8 +92,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@aztec/bb.js@0.23.0':
-    resolution: {integrity: sha512-dEIfEY0wNK5TIiP6BOjByWqQ3aV1TkTpN0FwEfY/1DlDpkw5WyIfSblLUAiAHgIrEsBHddWFU1z3r17Cyh1CTQ==}
+  '@aztec/bb.js@0.72.1':
+    resolution: {integrity: sha512-CyySqBvaA/TJ/e8KksDp6vS44IUMY2LNJbigm4rKc3jJXjj0xc33V6V5DfC9kR0iVGnFFsvm+BlVBxFsCIQaAg==}
     hasBin: true
 
   '@babel/code-frame@7.26.2':
@@ -418,20 +418,20 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@noir-lang/acvm_js@0.40.0':
-    resolution: {integrity: sha512-U4zKOPEP5winp0OG1cPvXZsxtrlXcO3KY+tMXpCJrY4N7e2y2mFNQGKo+bdbkEtSE+RTFdrlHxz7sB4ov23Vng==}
+  '@noir-lang/acvm_js@1.0.0-beta.2':
+    resolution: {integrity: sha512-vZYidnNS0MGRddggrq73Te0MiOb7j7ehZwM5L0dbxGwG6RqUNU+RDjG/TE7VUHOOFkZGY20lQqjHY1mj4pOH2A==}
 
-  '@noir-lang/backend_barretenberg@0.24.0':
-    resolution: {integrity: sha512-12qAo7u5OS7pbxwRfeHLzZDIOauYtWd1tREPYCl7HcVnGzT5hPrFzqXTCg7Vei27Hq4dm4F3xLbUZR8zn3zFLg==}
+  '@noir-lang/noir_js@1.0.0-beta.2':
+    resolution: {integrity: sha512-CiHnU5H1tUQHoKheHh93Ss7DJificdjXFUUfdasjMd8lsCMCPqY/oUoG4FZjWb7mWT8h0d/qcpGKMbs1VkBThQ==}
 
-  '@noir-lang/noir_js@0.24.0':
-    resolution: {integrity: sha512-q47RpSiZKJQ7yJWS2IK8YdS0wrtlL35IvCZXCE9K++Fa7dWkL3NE5u/+s1N2yqmVOiHnUAEv6PhHew01nim8og==}
+  '@noir-lang/noir_wasm@1.0.0-beta.2':
+    resolution: {integrity: sha512-B6zn1mgKBIDZE4nGvl6sOgErg7VsZOjP2D4FPHlHj4QF7h7ZbaISJ3+NM38FolaRkGEm2sSmSonaqKum0DchRA==}
 
-  '@noir-lang/noirc_abi@0.24.0':
-    resolution: {integrity: sha512-UOHncsxVjDf662LzF1lFaasy3v/L4JD1zpsMrpu/ufPiUTX8lseClESxpJA3BelrOn/6I0i9Vi6A/qX78JPTiw==}
+  '@noir-lang/noirc_abi@1.0.0-beta.2':
+    resolution: {integrity: sha512-8/Pc6C0IY4F3UCsubs96G4Nwalzo49TVW+2jej7uNaEJB7LCqbOk5G641XGcCV2McS7n7WbLt1eN3cKJrxUWrA==}
 
-  '@noir-lang/types@0.24.0':
-    resolution: {integrity: sha512-TynPttsUFVR/UX3vNJ24mOWQCZcJsSVwvOHwHrvvWiIsHobaT/sbiAMsLt3TzLfou9xOHDFGyzszy/LRnFTFTA==}
+  '@noir-lang/types@1.0.0-beta.2':
+    resolution: {integrity: sha512-0CosvfeAhwjmEt5cwJtEbju+8itRpmOUOmyt6TUo6JcRxaR8d4A+7j0sOgGxs2KVqWnMi1akJdGodAu0e4H+1A==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -776,9 +776,9 @@ packages:
   comlink@4.4.2:
     resolution: {integrity: sha512-OxGdvBmJuNKSCMO4NTl1L47VRp6xn2wG4F/2hYzB6tiCb709otOxtEYCSvK80PtjODfXXZu8ds+Nw5kVCjqd2g==}
 
-  commander@10.0.1:
-    resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
-    engines: {node: '>=14'}
+  commander@12.1.0:
+    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
+    engines: {node: '>=18'}
 
   commander@4.1.1:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
@@ -1586,11 +1586,13 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@aztec/bb.js@0.23.0':
+  '@aztec/bb.js@0.72.1':
     dependencies:
       comlink: 4.4.2
-      commander: 10.0.1
+      commander: 12.1.0
       debug: 4.4.0
+      fflate: 0.8.2
+      pako: 2.1.0
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
@@ -1881,27 +1883,24 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@noir-lang/acvm_js@0.40.0': {}
+  '@noir-lang/acvm_js@1.0.0-beta.2': {}
 
-  '@noir-lang/backend_barretenberg@0.24.0':
+  '@noir-lang/noir_js@1.0.0-beta.2':
     dependencies:
-      '@aztec/bb.js': 0.23.0
-      '@noir-lang/types': 0.24.0
-      fflate: 0.8.2
-    transitivePeerDependencies:
-      - supports-color
+      '@noir-lang/acvm_js': 1.0.0-beta.2
+      '@noir-lang/noirc_abi': 1.0.0-beta.2
+      '@noir-lang/types': 1.0.0-beta.2
 
-  '@noir-lang/noir_js@0.24.0':
+  '@noir-lang/noir_wasm@1.0.0-beta.2':
     dependencies:
-      '@noir-lang/acvm_js': 0.40.0
-      '@noir-lang/noirc_abi': 0.24.0
-      '@noir-lang/types': 0.24.0
+      '@noir-lang/types': 1.0.0-beta.2
+      pako: 2.1.0
 
-  '@noir-lang/noirc_abi@0.24.0':
+  '@noir-lang/noirc_abi@1.0.0-beta.2':
     dependencies:
-      '@noir-lang/types': 0.24.0
+      '@noir-lang/types': 1.0.0-beta.2
 
-  '@noir-lang/types@0.24.0': {}
+  '@noir-lang/types@1.0.0-beta.2': {}
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -2242,7 +2241,7 @@ snapshots:
 
   comlink@4.4.2: {}
 
-  commander@10.0.1: {}
+  commander@12.1.0: {}
 
   commander@4.1.1: {}
 
