@@ -26,6 +26,9 @@ importers:
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
+      garaga:
+        specifier: ^0.15.5
+        version: 0.15.5
       get-starknet:
         specifier: ^3.0.1
         version: 3.3.3(starknet@5.29.0)
@@ -1076,6 +1079,9 @@ packages:
 
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
+
+  garaga@0.15.5:
+    resolution: {integrity: sha512-NKc7f8Eyy3E90rFnTRfaqS7+bsaCH610hZVy8z6ezT2mauhbw78ouDyfu+oidLCnecbFbwsX0U08V7c0au+kcw==}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -2655,6 +2661,8 @@ snapshots:
     optional: true
 
   function-bind@1.1.2: {}
+
+  garaga@0.15.5: {}
 
   gensync@1.0.0-beta.2: {}
 

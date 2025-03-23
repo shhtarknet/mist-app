@@ -17,6 +17,7 @@
     "@noir-lang/noir_wasm": "1.0.0-beta.2",
     "@noir-lang/noirc_abi": "1.0.0-beta.3",
     "clsx": "^2.1.0",
+    "garaga": "^0.15.5",
     "get-starknet": "^3.0.1",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",

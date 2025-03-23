@@ -6,6 +6,6 @@ import topLevelAwait from "vite-plugin-top-level-await";
 export default defineConfig({
   plugins: [react(), wasm(), topLevelAwait()],
   optimizeDeps: {
-    exclude: ['lucide-react', '@noir-lang/noirc_abi', '@noir-lang/acvm_js']
+    exclude: ['lucide-react', '@noir-lang/noirc_abi', '@noir-lang/acvm_js', 'garaga']
   },
 });
