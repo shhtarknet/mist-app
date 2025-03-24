@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import toast from 'react-hot-toast';
 import { UltraHonkBackend, reconstructHonkProof } from '@aztec/bb.js';
 import { ProgramCompilationArtifacts } from "@noir-lang/noir_wasm"
 import { InputMap, Noir } from '@noir-lang/noir_js';
-import compiledArtifacts from '../circuits/transfer.json';
+import { transferCircuit } from '../circuits/transfer';
 
 // declare helper functions
 export function flattenFieldsAsArray(fields) {
@@ -52,26 +52,32 @@ export function useNoirProof() {
   //     .then(r => console.log("WASMs loaded", r))
   //     .catch(e => console.error("Failed to load WASMs", e));
   // }, []);
+
   const [isGenerating, setIsGenerating] = useState(false);
 
   const generateProof = useCallback(async (params: InputMap) => {
     setIsGenerating(true);
+    const keccak = true;
+    const proofType = keccak ? 'Keccak' : "Poseidon";
     try {
-      const programCompilation = { ...compiledArtifacts, name: '' } as ProgramCompilationArtifacts;
+      const programCompilation = { ...transferCircuit, name: '' } as ProgramCompilationArtifacts;
 
       const noir = new Noir(programCompilation.program);
       const backend = new UltraHonkBackend(programCompilation.program.bytecode);
 
-      console.log("Generating witness... ⏳");
+      console.log(`Generating ${proofType} witness...`);
       const { witness } = await noir.execute(params);
-      console.log("Generated witness... ✅");
 
-      console.log("Generating proof... ⏳");
-      const proof = await backend.generateProof(witness);
-      console.log("Generated proof... ✅");
-      console.log("Results", proof.proof);
+      console.log(`Generating ${proofType} proof...`);
+      const proof = await backend.generateProof(witness, { keccak });
 
-      return proof;
+      const isValid = await backend.verifyProof(proof, { keccak });
+      console.log(`${proofType} Proof is ${isValid ? "valid ✅" : "invalid ⛔️"}...`);
+
+      console.log('Bytecode len: ', programCompilation.program.bytecode.length);
+
+      const rawproof = reconstructHonkProof(flattenFieldsAsArray(proof.publicInputs), proof.proof);
+      return rawproof;
     } catch (error) {
       console.error('Failed to generate proof:', error);
       toast.error('Failed to generate proof');
