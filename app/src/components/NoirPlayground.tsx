@@ -1,6 +1,9 @@
 import { InputMap } from "@noir-lang/noir_js";
-import { useNoirProof } from "../hooks/useNoirProof";
-import { useState } from "react";
+import { flattenFieldsAsArray, useNoirProof } from "../hooks/useNoirProof";
+import { useEffect, useState } from "react";
+import * as Garaga from "garaga";
+import { transferVK } from '../circuits/transfer';
+import { reconstructHonkProof } from "@aztec/bb.js";
 
 function emPt(x: string, y: string): EmbeddedCurvePoint {
 	return { x, y, is_infinite: '0' }
@@ -33,7 +36,26 @@ export interface TransferProofWitnessData {
 
 export default function ProofPlayground() {
 	const { generateProof, isGenerating } = useNoirProof();
-	const [proof, setProof] = useState(false);
+	const [proof, setProof] = useState<Uint8Array>();
+
+	useEffect(() => {
+		Garaga.init().then(() => {
+			// Garaga.honk
+			// setProof(reconstructHonkProof(flattenFieldsAsArray(transferProof.publicInputs), transferProof.proof));
+		});
+	}, []);
+
+	useEffect(() => {
+		if (proof) {
+			try {
+				const vk = Garaga.parseHonkVerifyingKeyFromBytes(transferVK);
+				const honk_proof = Garaga.parseHonkProofFromBytes(proof);
+				const calldata = Garaga.getHonkCallData(honk_proof, vk, 0);
+			} catch (e) {
+				console.error(e);
+			}
+		}
+	}, [proof]);
 
 	return (
 		<div className='m-20 text-center'>
@@ -60,10 +82,9 @@ export default function ProofPlayground() {
 								emPt('0x2837ae6b3eb38bb368e52e4f2db26967710d7f4f46a1a963bd53ad59f1617fe8', '0x1583f4b6db398339d0632fd7211c518ee6bf24db94ae0f0635a5760515d57e9c',),
 							]
 						}
-
-
 					};
-					const proof = await generateProof(data as InputMap);
+
+					const proof = await generateProof(data as unknown as InputMap);
 					setProof(proof);
 				}}>
 				{proof ? 'Proof generated' : isGenerating ? 'Generating proof...' : 'Test proof gen'}
