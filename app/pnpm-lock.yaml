@@ -23,6 +23,9 @@ importers:
       '@noir-lang/noirc_abi':
         specifier: 1.0.0-beta.1
         version: 1.0.0-beta.1
+      baby-giant-wasm:
+        specifier: link:/Users/shramee/www/crypto/baby_giant/crates/wasm/pkg
+        version: link:../../../crypto/baby_giant/crates/wasm/pkg
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
