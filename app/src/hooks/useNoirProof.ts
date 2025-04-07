@@ -1,9 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { UltraHonkBackend, reconstructHonkProof } from '@aztec/bb.js';
 import { ProgramCompilationArtifacts } from "@noir-lang/noir_wasm"
 import { InputMap, Noir } from '@noir-lang/noir_js';
 import { transferCircuit } from '../circuits/transfer';
+import * as bsgs from "baby-giant-wasm";
+// import * as bsgs from "babyjubjub-utils";
 
 // declare helper functions
 export function flattenFieldsAsArray(fields) {
@@ -47,6 +49,15 @@ function hexToUint8Array(hex) {
 // import noirc from "@noir-lang/noirc_abi/web/noirc_abi_wasm_bg.wasm?url";
 
 export function useNoirProof() {
+  useEffect(() => {
+    bsgs.greet();
+    const start = Date.now();
+    const r = bsgs.grumpkin_log_test(23452345n)
+    const end = Date.now();
+    console.log(`Execution time: ${end - start} ms, result: ${r}`);
+    window.bsgs = bsgs;
+  }, []);
+
   // useEffect(() => {
   //   Promise.all([initACVM(fetch(acvm)), initNoirC(fetch(noirc))])
   //     .then(r => console.log("WASMs loaded", r))
