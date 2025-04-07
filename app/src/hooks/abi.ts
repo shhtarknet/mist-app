@@ -1,8 +1,10 @@
+import { Abi } from "starknet";
+
 export const VerifierABI = [
 	{
-		"name": "IUltraKeccakHonkVerifier",
+		"name": "IUltraKeccakZKHonkVerifier",
 		"type": "impl",
-		"interface_name": "confidential_erc20_transfer::honk_verifier::IUltraKeccakHonkVerifier"
+		"interface_name": "confidential_transfer::honk_verifier::IUltraKeccakZKHonkVerifier"
 	},
 	{
 		"name": "core::array::Span::<core::felt252>",
@@ -53,11 +55,11 @@ export const VerifierABI = [
 		]
 	},
 	{
-		"name": "confidential_erc20_transfer::honk_verifier::IUltraKeccakHonkVerifier",
+		"name": "confidential_transfer::honk_verifier::IUltraKeccakZKHonkVerifier",
 		"type": "interface",
 		"items": [
 			{
-				"name": "verify_ultra_keccak_honk_proof",
+				"name": "verify_ultra_keccak_zk_honk_proof",
 				"type": "function",
 				"inputs": [
 					{
@@ -76,8 +78,8 @@ export const VerifierABI = [
 	},
 	{
 		"kind": "enum",
-		"name": "confidential_erc20_transfer::honk_verifier::UltraKeccakHonkVerifier::Event",
+		"name": "confidential_transfer::honk_verifier::UltraKeccakZKHonkVerifier::Event",
 		"type": "event",
 		"variants": []
 	}
-] as const;
+] as const satisfies Abi;
