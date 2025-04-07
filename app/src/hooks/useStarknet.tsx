@@ -1,19 +1,23 @@
-import React, { createContext, useCallback, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState, ReactNode } from 'react';
 import { connect, disconnect } from 'get-starknet';
-import { AccountInterface, RpcProvider } from 'starknet';
+import { AccountInterface, Contract } from 'starknet';
 import toast from 'react-hot-toast';
+import { VerifierABI } from './abi.ts';
+
 
 // Create a context to hold our Starknet state
 interface StarknetContextType {
   account: AccountInterface | null;
-  provider: RpcProvider | null;
+  verifier: Contract | null;
   isConnecting: boolean;
   isConnected: boolean;
+  verify: () => Promise<void>;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
 }
 
 const StarknetContext = createContext<StarknetContextType | undefined>(undefined);
+const VERIFIER_ADDRESS = '';
 
 // Provider props interface
 interface StarknetProviderProps {
@@ -27,8 +31,26 @@ export function StarknetProvider({
   autoConnect = false
 }: StarknetProviderProps) {
   const [account, setAccount] = useState<AccountInterface | null>(null);
-  const [provider, setProvider] = useState<RpcProvider | null>(null);
+  const [verifier, setVerifier] = useState<Contract | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const starknet = await connect({ modalMode: 'neverAsk' });
+        if (starknet?.isConnected) {
+          setAccount(starknet.account);
+          setVerifier(new Contract(VerifierABI, VERIFIER_ADDRESS, starknet.account));
+        }
+      } catch (error) {
+        console.error('Failed to check wallet connection:', error);
+      }
+    };
+
+    if (autoConnect) {
+      checkConnection();
+    }
+  }, [autoConnect]);
 
   const handleConnect = useCallback(async () => {
     try {
@@ -41,13 +63,12 @@ export function StarknetProvider({
 
       await starknet.enable();
       setAccount(starknet.account);
-      setProvider(starknet.provider);
+      setVerifier(new Contract(VerifierABI, VERIFIER_ADDRESS, starknet.account));
       toast.success('Wallet connected successfully');
     } catch (error) {
       console.error('Failed to connect wallet:', error);
       toast.error('Failed to connect wallet. Please try again.');
       setAccount(null);
-      setProvider(null);
     } finally {
       setIsConnecting(false);
     }
@@ -57,7 +78,6 @@ export function StarknetProvider({
     try {
       await disconnect();
       setAccount(null);
-      setProvider(null);
       toast.success('Wallet disconnected');
     } catch (error) {
       console.error('Failed to disconnect wallet:', error);
@@ -65,28 +85,11 @@ export function StarknetProvider({
     }
   }, []);
 
-  useEffect(() => {
-    const checkConnection = async () => {
-      try {
-        const starknet = await connect({ modalMode: 'neverAsk' });
-        if (starknet?.isConnected) {
-          setAccount(starknet.account);
-          setProvider(starknet.provider);
-        }
-      } catch (error) {
-        console.error('Failed to check wallet connection:', error);
-      }
-    };
-
-    if (autoConnect) {
-      checkConnection();
-    }
-  }, [autoConnect]);
-
   const contextValue: StarknetContextType = {
     account,
-    provider,
+    verifier,
     isConnecting,
+    verify: async () => { },
     isConnected: !!account,
     connect: handleConnect,
     disconnect: handleDisconnect,
