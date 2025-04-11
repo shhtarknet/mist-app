@@ -103,7 +103,7 @@ export function StarknetProvider({
 }
 
 // Custom hook to use the Starknet context
-export function useStarknet() {
+export function useStarknet(): StarknetContextType {
   const context = useContext(StarknetContext);
 
   if (context === undefined) {
