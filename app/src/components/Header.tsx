@@ -1,6 +1,6 @@
 import React from 'react';
 import { Lock } from 'lucide-react';
-import { useStarknet } from '../hooks/useStarknet';
+import { useStarknet } from '../lib/useStarknet';
 
 export function Header() {
   const { isConnected, isConnecting, connect, disconnect, account } = useStarknet();

@@ -5,7 +5,7 @@ import HomeTab from './components/HomeTab';
 // import { OnboardTab } from './components/OnboardTab';
 import { TransferTab } from './components/TransferTab';
 import { Toaster } from 'react-hot-toast';
-import { StarknetProvider } from './hooks/useStarknet';
+import { StarknetProvider } from './lib/useStarknet';
 import ProofPlayground from './components/NoirPlayground';
 
 function App() {

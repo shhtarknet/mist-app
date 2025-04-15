@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useStarknet } from '../hooks/useStarknet';
-import { useNoirProof } from '../hooks/useNoirProof';
+import { useStarknet } from '../lib/useStarknet';
+import { useNoirProof } from '../lib/useNoirProof';
 
 export function TransferTab() {
   const { isConnected, account } = useStarknet();

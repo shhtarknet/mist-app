@@ -1,5 +1,5 @@
 import { InputMap } from "@noir-lang/noir_js";
-import { flattenFieldsAsArray, useNoirProof } from "../hooks/useNoirProof";
+import { flattenFieldsAsArray, useNoirProof } from "../lib/useNoirProof";
 import { useEffect, useState } from "react";
 import * as Garaga from "garaga";
 import { transferVK } from '../circuits/transfer';
