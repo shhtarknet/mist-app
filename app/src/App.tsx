@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { Tabs } from './components/Tabs';
-import { OnboardTab } from './components/OnboardTab';
+import HomeTab from './components/HomeTab';
+// import { OnboardTab } from './components/OnboardTab';
 import { TransferTab } from './components/TransferTab';
 import { Toaster } from 'react-hot-toast';
 import { StarknetProvider } from './hooks/useStarknet';
 import ProofPlayground from './components/NoirPlayground';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'onboard' | 'transfer'>('onboard');
+  const [activeTab, setActiveTab] = useState<'home' | 'transfer'>('home');
   return (
     <StarknetProvider autoConnect={true}>
 
@@ -17,12 +18,8 @@ function App() {
         <Header />
 
         <main className="container mx-auto mt-8">
-          <Tabs activeTab={activeTab} onTabChange={setActiveTab} />
-
-          <div className="mt-6">
-            {activeTab === 'onboard' ? <OnboardTab /> : <TransferTab />}
-            <ProofPlayground />
-          </div>
+          <HomeTab />
+          <TransferTab />
         </main>
       </div>
     </StarknetProvider>
