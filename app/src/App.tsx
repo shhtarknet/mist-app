@@ -1,84 +1,9 @@
-import React, { useState, createContext, useContext } from 'react';
 import { Copy, Send, ArrowDownCircle, Eye, EyeOff, X, Check, Shield, Lock } from 'lucide-react';
-import { WalletContextValue, WalletProviderProps } from './lib/types';
-
-// Create Context
-const WalletContext = createContext<WalletContextValue>();
-
-export const useWallet = () => useContext(WalletContext);
-
-export interface Notification { message: string, type: string }
-
-// Provider Component
-export const WalletProvider = ({ children }: WalletProviderProps) => {
-  const [balance, setBalance] = useState('750.00');
-  const [showEncrypted, setShowEncrypted] = useState(false);
-  const [transferAmount, setTransferAmount] = useState('');
-  const [recipient, setRecipient] = useState('');
-  const [showTransfer, setShowTransfer] = useState(false);
-  const [notification, setNotification] = useState<Notification | null>(null);
-
-  const balanceCipherText = {
-    c1: { x: '0x01', y: '0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c' },
-    c2: {
-      x: '0x2b2498a183dcc09a383386afdb675194b6119738bdb97b63e470644e87e8ec2b',
-      y: '0x2c0878f1e4f3d042322a228806f39091db24037fbd87602442619c73107a372b',
-    },
-  };
-
-  const showNotification = (message: string, type = 'success') => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
-  };
-
-  const handleTransfer = (e) => {
-    e.preventDefault();
-    showNotification('Transfer initiated successfully');
-    setTransferAmount('');
-    setRecipient('');
-    setShowTransfer(false);
-  };
-
-  const requestTestFunds = () => {
-    showNotification('Test funds requested successfully');
-  };
-
-  const truncateHash = (hash: string) => {
-    if (!hash) return '';
-    return `${hash.substring(0, 6)}...${hash.substring(hash.length - 4)}`;
-  };
-
-  // Value object with all states and functions to be provided
-  const value = {
-    balance,
-    setBalance,
-    showEncrypted,
-    setShowEncrypted,
-    transferAmount,
-    setTransferAmount,
-    recipient,
-    setRecipient,
-    showTransfer,
-    setShowTransfer,
-    notification,
-    setNotification,
-    balanceCipherText,
-    showNotification,
-    handleTransfer,
-    requestTestFunds,
-    truncateHash
-  };
-
-  return (
-    <WalletContext.Provider value={value}>
-      {children}
-    </WalletContext.Provider>
-  );
-};
+import { CoreProvider, useCore } from './lib/useCore';
 
 // Component for Notification
 const Notification = () => {
-  const { notification, setNotification } = useWallet();
+  const { notification, setNotification } = useCore();
 
   if (!notification) return null;
 
@@ -114,7 +39,7 @@ const Header = () => {
 
 // Component for Encrypted Balance View
 const EncryptedBalanceView = () => {
-  const { balanceCipherText, truncateHash } = useWallet();
+  const { balanceCipherText, truncateHash } = useCore();
 
   return (
     <div className="bg-gray-100 rounded-lg p-3 max-w-full overflow-hidden border border-gray-200">
@@ -160,7 +85,7 @@ const EncryptedBalanceView = () => {
 
 // Component for Balance Section
 const BalanceSection = () => {
-  const { balance, showEncrypted, setShowEncrypted } = useWallet();
+  const { balance, showEncrypted, setShowEncrypted } = useCore();
 
   return (
     <div className="px-6 py-8 flex flex-col items-center justify-center relative">
@@ -201,7 +126,7 @@ const BalanceSection = () => {
 
 // Component for Action Buttons
 const ActionButtons = () => {
-  const { setShowTransfer, requestTestFunds } = useWallet();
+  const { setShowTransfer, requestTestFunds } = useCore();
 
   return (
     <div className="w-full mt-8 space-y-3">
@@ -243,7 +168,7 @@ const TransferModal = () => {
     recipient,
     setRecipient,
     handleTransfer
-  } = useWallet();
+  } = useCore();
 
   if (!showTransfer) return null;
 
@@ -308,7 +233,7 @@ const TransferModal = () => {
 // Main App Component
 const App = () => {
   return (
-    <WalletProvider>
+    <CoreProvider>
       <div className="flex items-center justify-center min-h-screen bg-gray-50 text-gray-800 p-4">
         <div className="relative w-full max-w-md">
           <Notification />
@@ -323,7 +248,7 @@ const App = () => {
           <TransferModal />
         </div>
       </div>
-    </WalletProvider>
+    </CoreProvider>
   );
 };
 
