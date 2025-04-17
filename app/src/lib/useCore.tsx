@@ -1,11 +1,17 @@
 import { useState, createContext, useContext } from 'react';
-import { Notification, WalletContextValue, WalletProviderProps } from './types';
+import { Notification, CoreContextValue, WalletProviderProps } from './types';
 
 // Create Context
-const CoreContext = createContext<WalletContextValue | undefined>(undefined);
+const CoreContext = createContext<CoreContextValue | undefined>(undefined);
 
-export const useCore = () => useContext(CoreContext);
+export const useCore = (): CoreContextValue => {
+	const ctx = useContext(CoreContext)
+	if (!ctx) {
+		throw Error("Core context not defined");
+	}
 
+	return ctx
+};
 
 // Provider Component
 export const CoreProvider = ({ children }: WalletProviderProps) => {

@@ -20,7 +20,7 @@ export interface Notification {
 }
 
 // Context Value Type
-export interface WalletContextValue {
+export interface CoreContextValue {
 	// State
 	balance: string;
 	showEncrypted: boolean;
