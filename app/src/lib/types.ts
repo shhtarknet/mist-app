@@ -4,8 +4,8 @@ import { ReactNode } from 'react';
 
 // ElGamal Cipher Text Type
 export interface Point {
-	x: bigint; // Corresponds to u256 in Rust
-	y: bigint; // Corresponds to u256 in Rust
+	x: string; // Corresponds to u256 in Rust
+	y: string; // Corresponds to u256 in Rust
 };
 
 export interface CipherText {

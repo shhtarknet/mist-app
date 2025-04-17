@@ -1,38 +1,17 @@
-import React from 'react';
-import { Lock } from 'lucide-react';
-import { useStarknet } from '../lib/useStarknet';
-
-export function Header() {
-  const { isConnected, isConnecting, connect, disconnect, account } = useStarknet();
-
+import { Shield } from 'lucide-react';
+// Component for Header Section
+export const Header = () => {
   return (
-    <header className="bg-gray-900 text-white py-4 px-6">
-      <div className="container mx-auto flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Lock className="w-6 h-6" />
-          <h1 className="text-xl font-bold">Confidential ERC20</h1>
+    <div className="p-6 pb-4 border-b border-gray-200">
+      <div className="flex items-center">
+        <div className="mr-3 bg-blue-100 p-2 rounded-lg">
+          <Shield size={22} className="text-blue-600" />
         </div>
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span className="text-sm">
-              {isConnected ? `Connected: ${account?.address.slice(0, 6)}...${account?.address.slice(-4)}` : 'Disconnected'}
-            </span>
-          </div>
-          <button
-            onClick={isConnected ? disconnect : connect}
-            disabled={isConnecting}
-            className={`px-4 py-2 rounded-lg transition-colors ${isConnecting
-              ? 'bg-gray-500 cursor-not-allowed'
-              : isConnected
-                ? 'bg-red-600 hover:bg-red-700'
-                : 'bg-blue-600 hover:bg-blue-700'
-              }`}
-          >
-            {isConnecting ? 'Connecting...' : isConnected ? 'Disconnect' : 'Connect Wallet'}
-          </button>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">CipherMist</h1>
+          <p className="text-xs text-gray-500 mt-1">Encrypted ElGamal Transfer Protocol</p>
         </div>
       </div>
-    </header>
+    </div>
   );
-}
+};
