@@ -1,37 +1,13 @@
 import { InputMap } from "@noir-lang/noir_js";
-import { flattenFieldsAsArray, useNoirProof } from "../lib/useNoirProof";
+import { useNoirProof } from "../lib/useNoirProof";
 import { useEffect, useState } from "react";
 import * as Garaga from "garaga";
 import { transferVK } from '../circuits/transfer';
-import { reconstructHonkProof } from "@aztec/bb.js";
+import { Point, TransferProofWitnessData } from "../lib/types";
 
-function emPt(x: string, y: string): EmbeddedCurvePoint {
+function emPt(x: string, y: string): Point {
 	return { x, y }
 	// return { x, y, is_infinite: '0' }
-}
-
-export interface EmbeddedCurvePoint {
-	x: string;
-	y: string;
-	// is_infinite: string;
-}
-
-export interface SecretValues {
-	priv_key: string;
-	bal: string;
-	amt: string;
-	rnd: string;
-}
-
-export interface UserPubData {
-	pub_key: EmbeddedCurvePoint;
-	bal_ct: EmbeddedCurvePoint[];
-}
-
-export interface TransferProofWitnessData {
-	_s: SecretValues;
-	s: UserPubData;
-	r: UserPubData;
 }
 
 export default function ProofPlayground() {
