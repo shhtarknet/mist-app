@@ -1,5 +1,6 @@
-import { useState, createContext, useContext } from 'react';
-import { Notification, CoreContextValue, WalletProviderProps } from './types';
+import { useState, createContext, useContext, useEffect } from 'react';
+import { Notification, CoreContextValue, WalletProviderProps, CipherText } from './types';
+import { decryptBalance } from './utils';
 
 // Create Context
 const CoreContext = createContext<CoreContextValue | undefined>(undefined);
@@ -15,22 +16,42 @@ export const useCore = (): CoreContextValue => {
 
 // Provider Component
 export const CoreProvider = ({ children }: WalletProviderProps) => {
-	const [balance, setBalance] = useState('750.00');
+	const [balance, setBalance] = useState('');
+	const [balanceEnc, setBalanceEnc] = useState({
+		c1: { x: '0x0', y: '0x0' },
+		c2: { x: '0x0', y: '0x0', },
+	});
+	const [privateKey, setPrivateKey] = useState(1n);
 	const [showEncrypted, setShowEncrypted] = useState(false);
 	const [transferAmount, setTransferAmount] = useState('');
 	const [recipient, setRecipient] = useState('');
 	const [showTransfer, setShowTransfer] = useState(false);
 	const [notification, setNotification] = useState<Notification | null>(null);
 
-	const balanceCipherText = {
-		c1: { x: '0x01', y: '0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c' },
-		c2: {
-			x: '0x2b2498a183dcc09a383386afdb675194b6119738bdb97b63e470644e87e8ec2b',
-			y: '0x2c0878f1e4f3d042322a228806f39091db24037fbd87602442619c73107a372b',
-		},
-	};
+	useEffect(
+		() => {
+			const privKeyStr = window.localStorage.getItem('priv_key');
+			if (privKeyStr) {
+				setPrivateKey(BigInt(privKeyStr));
+			}
+		}, []
+	)
 
-	const showNotification = (message: string, type = 'success') => {
+	useEffect(
+		() => {
+			const encBal = {
+				c1: { x: '0x01', y: '0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c' },
+				c2: {
+					x: '0x2b2498a183dcc09a383386afdb675194b6119738bdb97b63e470644e87e8ec2b',
+					y: '0x2c0878f1e4f3d042322a228806f39091db24037fbd87602442619c73107a372b',
+				},
+			};
+			setBalanceEnc(encBal);
+			setBalance(decryptBalance(encBal, privateKey))
+		}, [privateKey]
+	)
+
+	const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
 		setNotification({ message, type });
 		setTimeout(() => setNotification(null), 3000);
 	};
@@ -66,7 +87,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		setShowTransfer,
 		notification,
 		setNotification,
-		balanceCipherText,
+		balanceEnc,
 		showNotification,
 		handleTransfer,
 		requestTestFunds,
