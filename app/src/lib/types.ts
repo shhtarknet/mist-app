@@ -29,6 +29,8 @@ export interface CoreContextValue {
 	showTransfer: boolean;
 	notification: Notification | null;
 	balanceCipherText: CipherText;
+	showCreateKeyModal: boolean;
+	keyPair: KeyPair;
 
 	// State Setters
 	setBalance: (balance: string) => void;
@@ -37,12 +39,15 @@ export interface CoreContextValue {
 	setRecipient: (recipient: string) => void;
 	setShowTransfer: (show: boolean) => void;
 	setNotification: (notification: Notification | null) => void;
+	setShowCreateKeyModal: (show: boolean) => void;
+	setKeyPair: (keyPair: KeyPair | null) => void;
 
 	// Functions
 	showNotification: (message: string, type?: 'success' | 'error') => void;
 	handleTransfer: (e: React.FormEvent) => void;
 	requestTestFunds: () => void;
 	truncateHash: (hash: string) => string;
+	createNewKeyPair: (seed: string) => void;
 }
 
 // Props Types
@@ -66,4 +71,10 @@ export interface TransferProofWitnessData {
 	_s: SecretValues;
 	s: UserPubData;
 	r: UserPubData;
+}
+
+// Key Pair Type
+export interface KeyPair {
+	publicKey: string;
+	privateKey: string;
 }
