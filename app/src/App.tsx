@@ -4,6 +4,7 @@ import { Header } from './components/Header';
 import { BalanceSection } from './components/BalanceSection';
 import { Footer } from './components/Footer';
 import { TransferModal } from './components/TransferModal';
+import CreateKeyModal from './components/CreateKeyModal';
 
 // Component for Notification
 const Notification = () => {
@@ -40,6 +41,7 @@ const App = () => {
           </div>
 
           <TransferModal />
+          <CreateKeyModal />
         </div>
       </div>
     </CoreProvider>

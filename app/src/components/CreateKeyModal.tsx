@@ -2,9 +2,9 @@ import { Key } from "lucide-react";
 import { useCore } from "../lib/useCore";
 
 const CreateKeyModal = () => {
-	const { showCreateKeyModal, createNewKeyPair } = useCore();
+	const { showCreateKeyModal, createNewKeyPair, keyPair } = useCore();
 
-	if (!showCreateKeyModal) return null;
+	if (!showCreateKeyModal && keyPair.publicKey) return null;
 
 	return (
 		<div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-10 p-4">
@@ -12,7 +12,7 @@ const CreateKeyModal = () => {
 				<div className="p-6 border-b border-gray-200">
 					<h2 className="text-xl font-bold text-gray-800">Welcome to CipherMist</h2>
 					<p className="text-sm text-gray-600 mt-2">
-						Before you can start using your encrypted wallet, you need to generate a key pair for the ElGamal encryption protocol.
+						Before you can start using your encrypted wallet, you need to generate a key pair for the encryption protocol.
 					</p>
 				</div>
 
