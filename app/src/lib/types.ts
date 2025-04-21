@@ -85,3 +85,18 @@ export interface KeyPair {
 	pubY: bigint,
 	privateKey: bigint;
 }
+
+
+// Onboarding component props
+
+export interface OnboardComponentProps {
+	currentStep: number;
+	totalSteps?: number;
+}
+
+export interface StepNavigationProps extends OnboardComponentProps {
+	onBack: () => void;
+}
+
+export interface StepContentProps extends OnboardComponentProps, HasChildren { }
+
