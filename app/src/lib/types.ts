@@ -40,7 +40,6 @@ export interface CoreContextValue {
 	setShowTransfer: (show: boolean) => void;
 	setNotification: (notification: Notification | null) => void;
 	setShowCreateKeyModal: (show: boolean) => void;
-	setKeyPair: (keyPair: KeyPair | null) => void;
 
 	// Functions
 	showNotification: (message: string, type?: 'success' | 'error') => void;

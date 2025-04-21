@@ -128,7 +128,6 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		showCreateKeyModal,
 		setShowCreateKeyModal,
 		keyPair,
-		setKeyPair,
 		showNotification,
 		handleTransfer,
 		requestTestFunds,
