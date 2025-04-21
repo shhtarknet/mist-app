@@ -41,7 +41,11 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	)
 
 	useEffect(
-		() => setBalance(decryptBalance(balanceEnc, '0x0' + keyPair.privateKey)), [balanceEnc, keyPair]
+		() => {
+			// TODO set correct key
+			const key = '1'; // keyPair.privateKey;
+			setBalance(decryptBalance(balanceEnc, key))
+		}, [balanceEnc, keyPair]
 	)
 
 	useEffect(
