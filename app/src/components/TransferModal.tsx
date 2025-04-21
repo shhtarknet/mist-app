@@ -39,7 +39,7 @@ export const TransferModal = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Amount (ETH)</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Amount (USDT)</label>
               <input
                 type="number"
                 value={transferAmount}

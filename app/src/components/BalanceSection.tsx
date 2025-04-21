@@ -31,7 +31,7 @@ export const BalanceSection = () => {
             </div>
             <div className="flex items-baseline justify-center">
               <span className="text-4xl font-bold text-gray-800">{balance}</span>
-              <span className="ml-2 text-lg text-gray-500">ETH</span>
+              <span className="ml-2 text-lg text-gray-500">USDT</span>
             </div>
 
             {keyPair.pubX.toString() && (

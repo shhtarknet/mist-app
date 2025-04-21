@@ -20,9 +20,9 @@ const CreateKeyModal = () => {
 		<div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-10 p-4">
 			<div className="bg-white rounded-3xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
 				<div className="p-6 border-b border-gray-200">
-					<h2 className="text-xl font-bold text-gray-800">Welcome to CipherMist</h2>
+					<h2 className="text-xl font-bold text-gray-800">Welcome to Mist</h2>
 					<p className="text-sm text-gray-600 mt-2">
-						Before you can start using your encrypted wallet, you need to generate a key pair for the encryption protocol.
+						Before you can start using your encrypted transactions, you need to generate a key pair for the encryption protocol.
 					</p>
 				</div>
 
@@ -37,7 +37,7 @@ const CreateKeyModal = () => {
 						<h3 className="text-sm font-medium text-gray-700 mb-2">About ElGamal Encryption</h3>
 						<p className="text-xs text-gray-600">
 							ElGamal is a public-key cryptosystem used to secure your transactions. Your public key can be shared,
-							while your private key must be kept secret. All your wallet operations will be encrypted.
+							while your private key must be kept secret.
 						</p>
 					</div>
 

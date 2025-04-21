@@ -12,7 +12,7 @@ export const Header = () => {
             <Shield size={22} className="text-blue-600" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">CipherMist</h1>
+            <h1 className="text-2xl font-bold text-gray-800">Mist</h1>
             <p className="text-xs text-gray-500 mt-1">Encrypted ElGamal Transfer Protocol</p>
           </div>
         </div>
