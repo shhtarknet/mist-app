@@ -18,7 +18,7 @@ export const useCore = (): CoreContextValue => {
 
 // Provider Component
 export const CoreProvider = ({ children }: WalletProviderProps) => {
-	const [isLoading, setLoading] = useState<bool>(true);
+	const [isLoading, setLoading] = useState(true);
 	const [starknet, setStarknet] = useState<StarknetWindowObject | null>(null);
 	const [balance, setBalance] = useState('');
 	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);

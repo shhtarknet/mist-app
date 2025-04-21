@@ -31,8 +31,15 @@ const Onboarding = () => {
 					alert("Please key in a 64 digit hexadecimal private key");
 					return;
 				}
-				setupKeyPair(BigInt('0x' + privKey));
-				setCurrentStep(prev => Math.min(prev + 1, 3));
+				if (confirm(
+					"Have you safely stored your private key?\n" +
+					"You won't be able to recover your funds if you lose it."
+				)) {
+					if (prompt("What is your private key?")?.replace('0x', '') === privKey) {
+						setupKeyPair(BigInt('0x' + privKey));
+						setCurrentStep(prev => Math.min(prev + 1, 3));
+					}
+				}
 				break;
 			case 3:
 				setShowOnboarding(false)
