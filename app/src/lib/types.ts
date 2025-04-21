@@ -46,7 +46,7 @@ export interface CoreContextValue {
 	handleTransfer: (e: React.FormEvent) => void;
 	requestTestFunds: () => void;
 	truncateHash: (hash: string) => string;
-	getKeyPair: (seed: string) => void;
+	getKeyPair: (privateKey: bigint) => void;
 }
 
 // Props Types

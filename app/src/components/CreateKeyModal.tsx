@@ -75,7 +75,7 @@ const CreateKeyModal = () => {
 								alert("Please key in a 64 digit hexadecimal private key");
 								return;
 							}
-							getKeyPair(privateKey);
+							getKeyPair(BigInt('0x' + privateKey));
 						}}>
 							<div>
 								<label className="block text-xs font-medium text-gray-600 mb-1">Private Key</label>

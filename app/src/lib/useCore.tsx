@@ -1,6 +1,7 @@
 import { useState, createContext, useContext, useEffect } from 'react';
 import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair } from './types';
 import { decryptBalance } from './utils';
+import * as curveWasm from "baby-giant-wasm";
 
 // Create Context
 const CoreContext = createContext<CoreContextValue | undefined>(undefined);
@@ -95,9 +96,12 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	};
 
 	// Create and save a new key pair
-	const getKeyPair = (privateKey: string) => {
+	const getKeyPair = (privateKey: bigint) => {
 		// const privateKey = '0x' + BigInt('0x' + seed);
-		const publicKey = '0x' + Math.random().toString(16).substring(2, 34);
+		const pubX = '0x' + Math.random().toString(16).substring(2, 34);
+		const pubPt = curveWasm.grumpkin_point(privateKey.toString()).split('|');
+
+		console.log(pubPt[0], pubPt[1]);
 
 		const newKeyPair = { privateKey, publicKey };
 		setKeyPair(newKeyPair);
