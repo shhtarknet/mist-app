@@ -34,12 +34,12 @@ export const BalanceSection = () => {
               <span className="ml-2 text-lg text-gray-500">ETH</span>
             </div>
 
-            {keyPair.pubX && (
+            {keyPair.pubX.toString() && (
               <div className="mt-4 bg-gray-100 p-3 rounded-lg w-full">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-xs font-medium text-gray-500">Public Key:</span>
                   <div className="flex items-center">
-                    <span className="text-xs font-mono text-gray-700">{truncateHash(keyPair.pubX)}</span>
+                    <span className="text-xs font-mono text-gray-700">{truncateHash(keyPair.pubX.toString(16))}</span>
                     <button className="ml-1 text-gray-500 hover:text-blue-600" title="Copy">
                       <Copy size={12} />
                     </button>

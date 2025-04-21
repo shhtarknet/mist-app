@@ -19,12 +19,11 @@ export const useCore = (): CoreContextValue => {
 export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [balance, setBalance] = useState('');
 	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
-	const [keyPair, setKeyPair] = useState<KeyPair>({ privateKey: '', pubX: '', pubY: '', });
+	const [keyPair, setKeyPair] = useState<KeyPair>({ privateKey: 0n, pubX: 0n, pubY: 0n, });
 	const [balanceEnc, setBalanceEnc] = useState<CipherText>({
 		c1: { x: '0x0', y: '0x0' },
 		c2: { x: '0x0', y: '0x0', },
 	});
-	const [privateKey, setPrivateKey] = useState(1n);
 	const [showEncrypted, setShowEncrypted] = useState(false);
 	const [transferAmount, setTransferAmount] = useState('');
 	const [recipient, setRecipient] = useState('');
@@ -33,15 +32,16 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 
 	useEffect(
 		() => {
-			const privKeyStr = window.localStorage.getItem('priv_key');
+			curveWasm.greet();
+			const privKeyStr = window.localStorage.getItem('privacyKeyPair');
 			if (privKeyStr) {
-				setPrivateKey(BigInt(privKeyStr));
+				setupKeyPair(BigInt('0x' + privKeyStr))
 			}
 		}, []
 	)
 
 	useEffect(
-		() => setBalance(decryptBalance(balanceEnc, privateKey)), [balanceEnc, privateKey]
+		() => setBalance(decryptBalance(balanceEnc, '0x0' + keyPair.privateKey)), [balanceEnc, keyPair]
 	)
 
 	useEffect(
@@ -54,7 +54,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 				},
 			};
 			setBalanceEnc(encBal);
-		}, [privateKey]
+		}, []
 	)
 
 	useEffect(
@@ -67,8 +67,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 				},
 			};
 			setBalanceEnc(encBal);
-			setBalance(decryptBalance(encBal, privateKey))
-		}, [privateKey]
+		}, []
 	)
 
 	const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
@@ -94,16 +93,21 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 
 	// Create and save a new key pair
 	const setupKeyPair = (privateKey: bigint) => {
-		const [pubX, pubY] = curveWasm.grumpkin_point(privateKey.toString()).split('|');
+		const [pubX_, pubY_] = curveWasm.grumpkin_point(privateKey.toString()).split('|');
 
-		console.log(pubX, pubY);
+		console.log("Priv key:", privateKey);
+		console.log("Pt:", '\n' + pubX_ + '\n' + pubY_);
 
-		setKeyPair({ privateKey: privateKey.toString(16), pubX, pubY });
+		const pubX = BigInt(pubX_);
+		const pubY = BigInt(pubY_);
+
+		console.log("Public key from priv key: " + pubX + ', ' + pubY);
+		setKeyPair({ privateKey, pubX, pubY });
 		setShowCreateKeyModal(false);
 
 		// In a real app, you would store this securely
 		// For demo purposes, we'll use localStorage
-		localStorage.setItem('privacyKeyPair', privateKey.toString());
+		localStorage.setItem('privacyKeyPair', privateKey.toString(16));
 	};
 
 

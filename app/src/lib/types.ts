@@ -74,7 +74,7 @@ export interface TransferProofWitnessData {
 
 // Key Pair Type
 export interface KeyPair {
-	pubX: string,
-	pubY: string,
-	privateKey: string;
+	pubX: bigint,
+	pubY: bigint,
+	privateKey: bigint;
 }
