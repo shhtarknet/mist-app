@@ -2,6 +2,7 @@ import { useState, createContext, useContext, useEffect } from 'react';
 import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair } from './types';
 import { decryptBalance } from './utils';
 import * as curveWasm from "baby-giant-wasm";
+import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
 
 // Create Context
 const CoreContext = createContext<CoreContextValue | undefined>(undefined);
@@ -17,6 +18,7 @@ export const useCore = (): CoreContextValue => {
 
 // Provider Component
 export const CoreProvider = ({ children }: WalletProviderProps) => {
+	const [starknet, setStarknet] = useState<StarknetWindowObject | null>(null);
 	const [balance, setBalance] = useState('');
 	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
 	const [keyPair, setKeyPair] = useState<KeyPair>({ privateKey: 0n, pubX: 0n, pubY: 0n, });
@@ -32,6 +34,9 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 
 	useEffect(
 		() => {
+			connect({ modalMode: 'neverAsk' }).then((starknet) => {
+				setStarknet(starknet);
+			});
 			curveWasm.greet();
 			const privKeyStr = window.localStorage.getItem('privacyKeyPair');
 			if (privKeyStr) {
@@ -117,6 +122,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 
 	// Value object with all states and functions to be provided
 	const value = {
+		starknet,
 		balance,
 		setBalance,
 		showEncrypted,

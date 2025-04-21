@@ -23,6 +23,9 @@ importers:
       '@noir-lang/noirc_abi':
         specifier: 1.0.0-beta.1
         version: 1.0.0-beta.1
+      '@starknet-io/get-starknet':
+        specifier: ^4.0.7
+        version: 4.0.7
       baby-giant-wasm:
         specifier: link:/Users/shramee/www/crypto/baby_giant/crates/wasm/pkg
         version: link:../../../crypto/baby_giant/crates/wasm/pkg
@@ -32,9 +35,6 @@ importers:
       garaga:
         specifier: ^0.15.5
         version: 0.15.5
-      get-starknet:
-        specifier: ^3.0.1
-        version: 3.3.3(starknet@5.29.0)
       lucide-react:
         specifier: ^0.344.0
         version: 0.344.0(react@18.3.1)
@@ -607,6 +607,15 @@ packages:
   '@scure/starknet@1.0.0':
     resolution: {integrity: sha512-o5J57zY0f+2IL/mq8+AYJJ4Xpc1fOtDhr+mFQKbHnYFmm3WQrC+8zj2HEgxak1a+x86mhmBC1Kq305KUpVf0wg==}
 
+  '@starknet-io/get-starknet-core@4.0.7':
+    resolution: {integrity: sha512-ocwQTdDvGa+0CvjGygyaTuFkda2R82dofydts8uXr9p0Diy/bmYW1fkuqJfi1nC5M+YcvvuEpl6wFvwXM1og5w==}
+
+  '@starknet-io/get-starknet@4.0.7':
+    resolution: {integrity: sha512-env/ZN5EmDJ6vDtIgjOjsEvvzdKBDaWZ0aLe79IVJ7lq2icqKbX86yR1/CUf4AU31AFYZHWZ3daOaGFT4nHSUQ==}
+
+  '@starknet-io/types-js@0.7.10':
+    resolution: {integrity: sha512-1VtCqX4AHWJlRRSYGSn+4X1mqolI1Tdq62IwzoU2vUuEE72S1OlEeGhpvd6XsdqXcfHmVzYfj8k1XtKBQqwo9w==}
+
   '@swc/core-darwin-arm64@1.11.11':
     resolution: {integrity: sha512-vJcjGVDB8cZH7zyOkC0AfpFYI/7GHKG0NSsH3tpuKrmoAXJyCYspKPGid7FT53EAlWreN7+Pew+bukYf5j+Fmg==}
     engines: {node: '>=10'}
@@ -816,6 +825,9 @@ packages:
 
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
+
+  async-mutex@0.5.0:
+    resolution: {integrity: sha512-1A94B18jkJ3DYq284ohPxoXbfTA5HsQ7/Mf4DEhcyLx3Bz27Rh59iScbB6EPiP+B+joue6YCxcMXSbFC1tZKwA==}
 
   autoprefixer@10.4.21:
     resolution: {integrity: sha512-O+A6LWV5LDHSJD3LjHYoNi4VLsj/Whi7k6zG12xTYaU4cQ8oxQGckXNX8cRHK5yOZ/ppVHe0ZBXGzSV9jXdVbQ==}
@@ -1084,14 +1096,6 @@ packages:
   get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
-
-  get-starknet-core@3.3.5:
-    resolution: {integrity: sha512-EiXfbVp1ZIKc4jjGA5hEyNsy9rnkH4ALpiMCD+4G2jtqo/Gq4TrcVzh//mJclLA8yHRh3576H1vbAeH5zA1CiQ==}
-    peerDependencies:
-      starknet: ^5.18.0
-
-  get-starknet@3.3.3:
-    resolution: {integrity: sha512-SdxNGKFmynRRf3p2VtaBEc1P/VbQHIt8igZC4+xCkKipm/DtZ5jptLXWhqTMYF9vARAmUNZsj8HGujKpqGEBEA==}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -2137,6 +2141,19 @@ snapshots:
       '@noble/curves': 1.3.0
       '@noble/hashes': 1.3.3
 
+  '@starknet-io/get-starknet-core@4.0.7':
+    dependencies:
+      '@module-federation/runtime': 0.1.21
+      '@starknet-io/types-js': 0.7.10
+      async-mutex: 0.5.0
+
+  '@starknet-io/get-starknet@4.0.7':
+    dependencies:
+      '@starknet-io/get-starknet-core': 4.0.7
+      bowser: 2.11.0
+
+  '@starknet-io/types-js@0.7.10': {}
+
   '@swc/core-darwin-arm64@1.11.11':
     optional: true
 
@@ -2362,6 +2379,10 @@ snapshots:
   arg@5.0.2: {}
 
   argparse@2.0.1: {}
+
+  async-mutex@0.5.0:
+    dependencies:
+      tslib: 2.8.1
 
   autoprefixer@10.4.21(postcss@8.5.3):
     dependencies:
@@ -2653,18 +2674,6 @@ snapshots:
   gensync@1.0.0-beta.2: {}
 
   get-caller-file@2.0.5: {}
-
-  get-starknet-core@3.3.5(starknet@5.29.0):
-    dependencies:
-      '@module-federation/runtime': 0.1.21
-      starknet: 5.29.0
-
-  get-starknet@3.3.3(starknet@5.29.0):
-    dependencies:
-      bowser: 2.11.0
-      get-starknet-core: 3.3.5(starknet@5.29.0)
-    transitivePeerDependencies:
-      - starknet
 
   glob-parent@5.1.2:
     dependencies:

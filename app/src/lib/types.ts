@@ -1,5 +1,6 @@
 // Types for the wallet context and components
 
+import { StarknetWindowObject } from '@starknet-io/get-starknet';
 import { ReactNode } from 'react';
 
 // ElGamal Cipher Text Type
@@ -31,6 +32,7 @@ export interface CoreContextValue {
 	balanceEnc: CipherText;
 	showCreateKeyModal: boolean;
 	keyPair: KeyPair;
+	starknet: StarknetWindowObject | null,
 
 	// State Setters
 	setBalance: (balance: string) => void;
