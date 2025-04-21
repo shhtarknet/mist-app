@@ -28,7 +28,7 @@ export interface CoreContextValue {
 	recipient: string;
 	showTransfer: boolean;
 	notification: Notification | null;
-	balanceCipherText: CipherText;
+	balanceEnc: CipherText;
 	showCreateKeyModal: boolean;
 	keyPair: KeyPair;
 
@@ -47,7 +47,7 @@ export interface CoreContextValue {
 	handleTransfer: (e: React.FormEvent) => void;
 	requestTestFunds: () => void;
 	truncateHash: (hash: string) => string;
-	createNewKeyPair: (seed: string) => void;
+	getKeyPair: (seed: string) => void;
 }
 
 // Props Types

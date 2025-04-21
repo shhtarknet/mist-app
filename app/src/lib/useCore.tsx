@@ -95,8 +95,8 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	};
 
 	// Create and save a new key pair
-	const createNewKeyPair = (seed: string) => {
-		const privateKey = '0x' + seed + Math.random().toString(16).substring(2, 34);
+	const getKeyPair = (privateKey: string) => {
+		// const privateKey = '0x' + BigInt('0x' + seed);
 		const publicKey = '0x' + Math.random().toString(16).substring(2, 34);
 
 		const newKeyPair = { privateKey, publicKey };
@@ -133,7 +133,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		handleTransfer,
 		requestTestFunds,
 		truncateHash,
-		createNewKeyPair,
+		getKeyPair,
 		balanceEnc,
 	};
 
