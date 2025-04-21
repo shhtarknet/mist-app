@@ -46,23 +46,26 @@ const CreateKeyModal = () => {
 								<input
 									type="text"
 									value={keyPair.publicKey}
-									placeholder="0x..."
 									className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-									required
-									minLength={8}
 								/>
 							</div>
 							<div className="mb-3">
 								<label className="block text-xs font-medium text-gray-600 mb-1">Your private key</label>
 								<input
-									type="text"
+									onFocus={(e => e.target.type = "text")}
+									onBlur={(e => e.target.type = "password")}
+									type="password"
 									value={keyPair.privateKey}
 									placeholder="0x..."
 									className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-									required
-									minLength={8}
 								/>
 							</div>
+							<button
+								className="w-full mt-3 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center justify-center transition-colors"
+							>
+								<Key size={18} className="mr-2" />
+								Done
+							</button>
 						</> :
 						<form onSubmit={(e) => {
 							e.preventDefault();
