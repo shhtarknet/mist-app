@@ -24,6 +24,7 @@ export interface Notification {
 export interface CoreContextValue {
 	// State
 	balance: string;
+	isLoading: boolean;
 	showEncrypted: boolean;
 	showOnboarding: boolean;
 	transferAmount: string;

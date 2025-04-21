@@ -18,6 +18,7 @@ export const useCore = (): CoreContextValue => {
 
 // Provider Component
 export const CoreProvider = ({ children }: WalletProviderProps) => {
+	const [isLoading, setLoading] = useState<bool>(true);
 	const [starknet, setStarknet] = useState<StarknetWindowObject | null>(null);
 	const [balance, setBalance] = useState('');
 	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
@@ -35,14 +36,16 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 
 	useEffect(
 		() => {
-			connect({ modalMode: 'neverAsk' }).then((starknet) => {
-				setStarknet(starknet);
-			});
-			curveWasm.greet();
-			const privKeyStr = window.localStorage.getItem('privacyKeyPair');
-			if (privKeyStr) {
-				setupKeyPair(BigInt('0x' + privKeyStr))
-			}
+			(async () => {
+				await connect({ modalMode: 'neverAsk' }).then((starknet) => {
+					setStarknet(starknet);
+				});
+				const privKeyStr = window.localStorage.getItem('privacyKeyPair');
+				if (privKeyStr) {
+					setupKeyPair(BigInt('0x' + privKeyStr))
+				}
+				setLoading(false);
+			})();
 		}, []
 	)
 
@@ -140,6 +143,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	// Value object with all states and functions to be provided
 	const value = {
 		starknet,
+		isLoading,
 		balance,
 		setBalance,
 		showEncrypted,

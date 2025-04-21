@@ -28,24 +28,28 @@ const Notification = () => {
 };
 
 const AppContent = () => {
-  const { starknet, showOnboarding } = useCore();
+  const { isLoading, starknet, showOnboarding } = useCore();
 
   return <div className="relative w-full max-w-md">
     <Notification />
-    {showOnboarding ?
-      <Onboarding /> :
-      starknet ?
-        <>
-          <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
-            <Header />
-            <BalanceSection />
-            <Footer />
-          </div>
+    {isLoading ?
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+      </div> :
+      showOnboarding ?
+        <Onboarding /> :
+        starknet ?
+          <>
+            <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
+              <Header />
+              <BalanceSection />
+              <Footer />
+            </div>
 
-          <TransferModal />
-          <CreateKeyModal />
-        </> :
-        <StarknetModal />}
+            <TransferModal />
+            <CreateKeyModal />
+          </> :
+          <StarknetModal />}
   </div>;
 }
 
