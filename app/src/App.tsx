@@ -5,6 +5,7 @@ import { BalanceSection } from './components/BalanceSection';
 import { Footer } from './components/Footer';
 import { TransferModal } from './components/TransferModal';
 import CreateKeyModal from './components/CreateKeyModal';
+import StarknetModal from './components/StarknetModal';
 
 // Component for Notification
 const Notification = () => {
@@ -25,24 +26,32 @@ const Notification = () => {
   );
 };
 
+const AppContent = () => {
+  const { starknet } = useCore();
+
+  return <div className="relative w-full max-w-md">
+    <Notification />
+    {starknet ?
+      <>
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
+          <Header />
+          <BalanceSection />
+          <Footer />
+        </div>
+
+        <TransferModal />
+        <CreateKeyModal />
+      </> :
+      <StarknetModal />}
+  </div>;
+}
+
 // Main App Component
 const App = () => {
   return (
     <CoreProvider>
       <div className="flex items-center justify-center min-h-screen bg-gray-50 text-gray-800 p-4">
-        <div className="relative w-full max-w-md">
-          <Notification />
-
-          {/* Main Card */}
-          <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
-            <Header />
-            <BalanceSection />
-            <Footer />
-          </div>
-
-          <TransferModal />
-          <CreateKeyModal />
-        </div>
+        <AppContent />
       </div>
     </CoreProvider>
   );
