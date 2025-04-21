@@ -19,10 +19,7 @@ export const useCore = (): CoreContextValue => {
 export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [balance, setBalance] = useState('');
 	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
-	const [keyPair, setKeyPair] = useState<KeyPair>({
-		privateKey: '',
-		publicKey: '',
-	});
+	const [keyPair, setKeyPair] = useState<KeyPair>({ privateKey: '', pubX: '', pubY: '', });
 	const [balanceEnc, setBalanceEnc] = useState<CipherText>({
 		c1: { x: '0x0', y: '0x0' },
 		c2: { x: '0x0', y: '0x0', },
@@ -96,22 +93,17 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	};
 
 	// Create and save a new key pair
-	const getKeyPair = (privateKey: bigint) => {
-		// const privateKey = '0x' + BigInt('0x' + seed);
-		const pubX = '0x' + Math.random().toString(16).substring(2, 34);
-		const pubPt = curveWasm.grumpkin_point(privateKey.toString()).split('|');
+	const setupKeyPair = (privateKey: bigint) => {
+		const [pubX, pubY] = curveWasm.grumpkin_point(privateKey.toString()).split('|');
 
-		console.log(pubPt[0], pubPt[1]);
+		console.log(pubX, pubY);
 
-		const newKeyPair = { privateKey, publicKey };
-		setKeyPair(newKeyPair);
+		setKeyPair({ privateKey: privateKey.toString(16), pubX, pubY });
 		setShowCreateKeyModal(false);
 
 		// In a real app, you would store this securely
 		// For demo purposes, we'll use localStorage
-		localStorage.setItem('cipherMistKeyPair', JSON.stringify(newKeyPair));
-
-		showNotification('Key pair generated successfully');
+		localStorage.setItem('privacyKeyPair', privateKey.toString());
 	};
 
 
@@ -136,7 +128,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		handleTransfer,
 		requestTestFunds,
 		truncateHash,
-		getKeyPair,
+		setupKeyPair,
 		balanceEnc,
 	};
 

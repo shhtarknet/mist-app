@@ -46,7 +46,7 @@ export interface CoreContextValue {
 	handleTransfer: (e: React.FormEvent) => void;
 	requestTestFunds: () => void;
 	truncateHash: (hash: string) => string;
-	getKeyPair: (privateKey: bigint) => void;
+	setupKeyPair: (privateKey: bigint) => void;
 }
 
 // Props Types
@@ -74,6 +74,7 @@ export interface TransferProofWitnessData {
 
 // Key Pair Type
 export interface KeyPair {
-	publicKey: string;
+	pubX: string,
+	pubY: string,
 	privateKey: string;
 }

@@ -17,7 +17,7 @@ export const Header = () => {
           </div>
         </div>
 
-        {keyPair.publicKey && (
+        {keyPair.pubX && (
           <button
             onClick={() => setShowCreateKeyModal(true)}
             className="text-xs text-blue-600 hover:text-blue-800 flex items-center"

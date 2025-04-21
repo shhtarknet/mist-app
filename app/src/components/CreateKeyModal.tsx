@@ -3,7 +3,7 @@ import { useCore } from "../lib/useCore";
 import { useState } from "react";
 
 const CreateKeyModal = () => {
-	const { showCreateKeyModal, setShowCreateKeyModal, getKeyPair, keyPair } = useCore();
+	const { showCreateKeyModal, setShowCreateKeyModal, setupKeyPair, keyPair, showNotification } = useCore();
 	const bitSize = 2 ** 48;
 	const [privateKey, setSeed] = useState(
 		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
@@ -14,7 +14,7 @@ const CreateKeyModal = () => {
 		BigInt(Math.floor(Math.random() * 2 ** 16)).toString(16)
 	);
 
-	if (!showCreateKeyModal && keyPair.publicKey) return null;
+	if (!showCreateKeyModal && keyPair.pubX) return null;
 
 	return (
 		<div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-10 p-4">
@@ -41,13 +41,13 @@ const CreateKeyModal = () => {
 						</p>
 					</div>
 
-					{keyPair.publicKey ?
+					{keyPair.pubX ?
 						<>
 							<div className="mb-3">
 								<label className="block text-xs font-medium text-gray-600 mb-1">Your public key</label>
 								<input
 									type="text"
-									value={keyPair.publicKey}
+									value={keyPair.pubX}
 									className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 								/>
 							</div>
@@ -75,7 +75,9 @@ const CreateKeyModal = () => {
 								alert("Please key in a 64 digit hexadecimal private key");
 								return;
 							}
-							getKeyPair(BigInt('0x' + privateKey));
+							setupKeyPair(BigInt('0x' + privateKey));
+							showNotification('Key pair generated successfully');
+
 						}}>
 							<div>
 								<label className="block text-xs font-medium text-gray-600 mb-1">Private Key</label>
@@ -93,7 +95,7 @@ const CreateKeyModal = () => {
 								className="w-full mt-3 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center justify-center transition-colors"
 							>
 								<Key size={18} className="mr-2" />
-								Generate Key Pair
+								Setup Key Pair
 							</button>
 						</form>}
 				</div>
