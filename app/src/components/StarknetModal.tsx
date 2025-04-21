@@ -1,10 +1,14 @@
 import { Wallet, Wallet2 } from "lucide-react";
 import { useCore } from "../lib/useCore";
-import Onboarding from "./onboard/Onboarding";
 import { useEffect } from "react";
 
 const StarknetModal = () => {
-	const { connectStarknet } = useCore();
+	const { connectStarknet, keyPair, setShowOnboarding } = useCore();
+	useEffect(() => {
+		if (keyPair.pubX) {
+			setShowOnboarding(true);
+		}
+	}, [keyPair.pubX, setShowOnboarding]);
 	return (
 		<div className="flex items-center justify-center z-10 p-4">
 			<div className="bg-white rounded-3xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">

@@ -1,19 +1,12 @@
 import { Key } from "lucide-react";
 import { useCore } from "../lib/useCore";
+import { generatePrivateKey } from "../lib/utils";
 import { useState } from "react";
 import { disconnect } from "@starknet-io/get-starknet";
 
 const CreateKeyModal = () => {
 	const { showCreateKeyModal, setShowCreateKeyModal, setupKeyPair, keyPair, showNotification } = useCore();
-	const bitSize = 2 ** 48;
-	const [privateKey, setSeed] = useState(
-		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
-		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
-		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
-		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
-		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
-		BigInt(Math.floor(Math.random() * 2 ** 16)).toString(16)
-	);
+	const [privateKey, setSeed] = useState(generatePrivateKey());
 
 	if (!showCreateKeyModal && keyPair.pubX) return null;
 

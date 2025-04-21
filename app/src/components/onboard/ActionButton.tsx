@@ -16,11 +16,11 @@ export const ActionButton = ({ currentStep, onClick, label, icon, color }: Actio
 
 	if (!label) {
 		if (currentStep === 1) {
-			buttonLabel = "Generate Keys";
-			buttonIcon = <Key size={18} className="mr-2" />;
-		} else if (currentStep === 2) {
 			buttonLabel = "Connect Wallet";
 			buttonIcon = <Wallet size={18} className="mr-2" />;
+		} else if (currentStep === 2) {
+			buttonLabel = "Generate Keys";
+			buttonIcon = <Key size={18} className="mr-2" />;
 		} else {
 			buttonLabel = "Continue to Mist";
 			buttonIcon = <ArrowRight size={18} className="mr-2" />;

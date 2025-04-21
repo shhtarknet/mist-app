@@ -27,3 +27,14 @@ export function decryptBalance(balEnc: CipherText, privateKey: string): string {
 
 	return bal.substring(0, bal.length - 2) + '.' + bal.substring(bal.length - 2);
 }
+
+export function generatePrivateKey() {
+	const bitSize = 2 ** 48;
+
+	return BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
+		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
+		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
+		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
+		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
+		BigInt(Math.floor(Math.random() * 2 ** 16)).toString(16)
+}

@@ -121,14 +121,19 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	};
 
 	const connectStarknet = async () => {
-		if (!starknet) {
-			try {
-				const swo = await connect({ modalMode: 'alwaysAsk' });
-				setStarknet(swo);
-			} catch (e) {
-				console.error('Error occurred wile connecting to Starknet\n', e);
-			}
+		if (starknet) {
+			return true;
 		}
+		try {
+			const swo = await connect({ modalMode: 'alwaysAsk', modalTheme: 'light' });
+			if (swo) {
+				setStarknet(swo);
+				return true;
+			}
+		} catch (e) {
+			console.error('Error occurred wile connecting to Starknet\n', e);
+		}
+		return false;
 	};
 
 

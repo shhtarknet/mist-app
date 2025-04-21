@@ -6,6 +6,7 @@ import { Footer } from './components/Footer';
 import { TransferModal } from './components/TransferModal';
 import CreateKeyModal from './components/CreateKeyModal';
 import StarknetModal from './components/StarknetModal';
+import Onboarding from './components/onboard/Onboarding';
 
 // Component for Notification
 const Notification = () => {
@@ -27,22 +28,24 @@ const Notification = () => {
 };
 
 const AppContent = () => {
-  const { starknet } = useCore();
+  const { starknet, showOnboarding } = useCore();
 
   return <div className="relative w-full max-w-md">
     <Notification />
-    {starknet ?
-      <>
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
-          <Header />
-          <BalanceSection />
-          <Footer />
-        </div>
+    {showOnboarding ?
+      <Onboarding /> :
+      starknet ?
+        <>
+          <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
+            <Header />
+            <BalanceSection />
+            <Footer />
+          </div>
 
-        <TransferModal />
-        <CreateKeyModal />
-      </> :
-      <StarknetModal />}
+          <TransferModal />
+          <CreateKeyModal />
+        </> :
+        <StarknetModal />}
   </div>;
 }
 

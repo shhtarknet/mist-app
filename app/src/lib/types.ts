@@ -51,15 +51,12 @@ export interface CoreContextValue {
 	requestTestFunds: () => void;
 	truncateHash: (hash: string) => string;
 	setupKeyPair: (privateKey: bigint) => void;
-	connectStarknet: () => Promise<void>;
+	connectStarknet: () => Promise<boolean>;
 }
 
-// Props Types
-export interface HasChildren {
+export interface WalletProviderProps {
 	children: ReactNode;
 }
-
-export interface WalletProviderProps extends HasChildren { }
 
 export interface SecretValues {
 	priv_key: string;
@@ -98,5 +95,7 @@ export interface StepNavigationProps extends OnboardComponentProps {
 	onBack: () => void;
 }
 
-export interface StepContentProps extends OnboardComponentProps, HasChildren { }
+export interface StepContentProps extends OnboardComponentProps {
+	postContent?: ReactNode
+}
 

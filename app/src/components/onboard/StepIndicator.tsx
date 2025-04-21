@@ -8,13 +8,13 @@ export const StepIndicator = ({ currentStep, totalSteps }: OnboardComponentProps
 
 	// Icons for each step
 	const stepIcons = [
-		<KeyRoundIcon size={16} />,
 		<Wallet2 size={16} />,
+		<KeyRoundIcon size={16} />,
 		<Lock size={16} />
 	];
 
 	// Labels for each step
-	const stepLabels = ["Key pair", "Wallet", "Secure"];
+	const stepLabels = ["Wallet", "Key pair", "Secure"];
 
 	return (
 		<div className="flex items-center justify-between mb-6">

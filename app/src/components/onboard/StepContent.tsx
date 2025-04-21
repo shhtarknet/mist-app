@@ -1,28 +1,23 @@
 import { Wallet, Key, Lock } from "lucide-react";
-import { OnboardComponentProps } from "../../lib/types";
+import { StepContentProps } from "../../lib/types";
 
-export const StepContent = ({ currentStep, children }: OnboardComponentProps) => {
-	// If custom content is provided, render that instead of default content
-	if (children) {
-		return <div className="mb-6">{children}</div>;
-	}
-
+export const StepContent = ({ currentStep, postContent }: StepContentProps) => {
 	// Default currentStep content
 	const stepContents = [
 		{
-			icon: <Key size={40} className="text-blue-600" />,
-			title: "Step 1: Generate Encryption Keys",
-			description: "Once your wallet is connected, we'll generate an ElGamal encryption key pair to protect your transactions."
+			icon: <Wallet size={40} className="text-blue-600" />,
+			title: "Step 1: Connect Your Wallet",
+			description: "To get started, connect your wallet to make transactions."
 		},
 		{
-			icon: <Wallet size={40} className="text-blue-600" />,
-			title: "Step 2: Connect Your Wallet",
-			description: "To get started, connect your digital wallet to secure your account and enable transactions."
+			icon: <Key size={40} className="text-blue-600" />,
+			title: "Step 2: Generate Encryption Keys",
+			description: "Now we need a private key for encryption, please keep this key safe, losing the key will result in loos of funds."
 		},
 		{
 			icon: <Lock size={40} className="text-blue-600" />,
 			title: "All Set!",
-			description: "Your wallet is connected and your encryption keys are ready. You can now use Mist for private, secure transactions."
+			description: "Your wallet is connected and your encryption keys are ready. You can now use Mist for confidential transactions."
 		}
 	];
 
@@ -38,6 +33,7 @@ export const StepContent = ({ currentStep, children }: OnboardComponentProps) =>
 				<p className="text-sm text-gray-600 mb-4">
 					{content.description}
 				</p>
+				{postContent}
 			</div>
 		</div>
 	);
