@@ -1,8 +1,16 @@
 import { Key } from "lucide-react";
 import { useCore } from "../lib/useCore";
+import { useState } from "react";
 
 const CreateKeyModal = () => {
-	const { showCreateKeyModal, createNewKeyPair, keyPair } = useCore();
+	const { showCreateKeyModal, getKeyPair, keyPair } = useCore();
+	const bit32Mask = 2 ** 32;
+	const [privateKey, setSeed] = useState(
+		BigInt(Math.floor(Math.random() * bit32Mask)).toString(16) +
+		BigInt(Math.floor(Math.random() * bit32Mask)).toString(16) +
+		BigInt(Math.floor(Math.random() * bit32Mask)).toString(16) +
+		BigInt(Math.floor(Math.random() * bit32Mask)).toString(16)
+	);
 
 	if (!showCreateKeyModal && keyPair.publicKey) return null;
 
@@ -31,16 +39,58 @@ const CreateKeyModal = () => {
 						</p>
 					</div>
 
-					<button
-						onClick={createNewKeyPair}
-						className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center justify-center transition-colors"
-					>
-						<Key size={18} className="mr-2" />
-						Generate My Key Pair
-					</button>
+					{keyPair.publicKey ?
+						<>
+							<div className="mb-3">
+								<label className="block text-xs font-medium text-gray-600 mb-1">Your public key</label>
+								<input
+									type="text"
+									value={keyPair.publicKey}
+									placeholder="0x..."
+									className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									required
+									minLength={8}
+								/>
+							</div>
+							<div className="mb-3">
+								<label className="block text-xs font-medium text-gray-600 mb-1">Your private key</label>
+								<input
+									type="text"
+									value={keyPair.privateKey}
+									placeholder="0x..."
+									className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									required
+									minLength={8}
+								/>
+							</div>
+						</> :
+						<form onSubmit={(e) => {
+							e.preventDefault();
+							getKeyPair(privateKey);
+						}}>
+							<div>
+								<label className="block text-xs font-medium text-gray-600 mb-1">Private Key</label>
+								<input
+									type="text"
+									value={privateKey}
+									onChange={(e) => setSeed(e.target.value)}
+									placeholder="0x..."
+									className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									required
+									minLength={8}
+								/>
+							</div>
+
+							<button
+								className="w-full mt-3 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center justify-center transition-colors"
+							>
+								<Key size={18} className="mr-2" />
+								Generate Key Pair
+							</button>
+						</form>}
 				</div>
 			</div>
-		</div>
+		</div >
 	);
 };
 
