@@ -15,7 +15,7 @@ export const TransferModal = () => {
   if (!showTransfer) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-10 p-4">
+    <div className="fixed inset-0 flex items-center justify-center z-10 p-4">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
         <div className="p-6 border-b border-gray-200 flex justify-between items-center">
           <h2 className="text-xl font-bold text-gray-800">Transfer Funds</h2>

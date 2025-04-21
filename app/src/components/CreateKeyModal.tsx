@@ -1,6 +1,7 @@
 import { Key } from "lucide-react";
 import { useCore } from "../lib/useCore";
 import { useState } from "react";
+import { disconnect } from "@starknet-io/get-starknet";
 
 const CreateKeyModal = () => {
 	const { showCreateKeyModal, setShowCreateKeyModal, setupKeyPair, keyPair, showNotification } = useCore();
@@ -17,7 +18,7 @@ const CreateKeyModal = () => {
 	if (!showCreateKeyModal && keyPair.pubX) return null;
 
 	return (
-		<div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-10 p-4">
+		<div className="fixed inset-0 flex items-center justify-center z-10 p-4">
 			<div className="bg-white rounded-3xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
 				<div className="p-6 border-b border-gray-200">
 					<h2 className="text-xl font-bold text-gray-800">Welcome to Mist</h2>
@@ -67,6 +68,12 @@ const CreateKeyModal = () => {
 								onClick={() => setShowCreateKeyModal(false)}
 							>
 								Done
+							</button>
+							<button
+								className="w-full mt-3 py-3 px-4 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-medium flex items-center justify-center transition-colors"
+								onClick={async () => await disconnect()}
+							>
+								Disconnect wallet
 							</button>
 						</> :
 						<form onSubmit={(e) => {
