@@ -21,6 +21,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [starknet, setStarknet] = useState<StarknetWindowObject | null>(null);
 	const [balance, setBalance] = useState('');
 	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
+	const [showOnboarding, setShowOnboarding] = useState(false);
 	const [keyPair, setKeyPair] = useState<KeyPair>({ privateKey: 0n, pubX: 0n, pubY: 0n, });
 	const [balanceEnc, setBalanceEnc] = useState<CipherText>({
 		c1: { x: '0x0', y: '0x0' },
@@ -138,6 +139,8 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		setBalance,
 		showEncrypted,
 		setShowEncrypted,
+		showOnboarding,
+		setShowOnboarding,
 		transferAmount,
 		setTransferAmount,
 		recipient,

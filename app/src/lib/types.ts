@@ -25,6 +25,7 @@ export interface CoreContextValue {
 	// State
 	balance: string;
 	showEncrypted: boolean;
+	showOnboarding: boolean;
 	transferAmount: string;
 	recipient: string;
 	showTransfer: boolean;
@@ -37,6 +38,7 @@ export interface CoreContextValue {
 	// State Setters
 	setBalance: (balance: string) => void;
 	setShowEncrypted: (show: boolean) => void;
+	setShowOnboarding: (show: boolean) => void;
 	setTransferAmount: (amount: string) => void;
 	setRecipient: (recipient: string) => void;
 	setShowTransfer: (show: boolean) => void;
@@ -53,9 +55,11 @@ export interface CoreContextValue {
 }
 
 // Props Types
-export interface WalletProviderProps {
+export interface HasChildren {
 	children: ReactNode;
 }
+
+export interface WalletProviderProps extends HasChildren { }
 
 export interface SecretValues {
 	priv_key: string;
