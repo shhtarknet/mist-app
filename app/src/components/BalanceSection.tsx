@@ -10,7 +10,7 @@ export const BalanceSection = () => {
   return (
     <div className="px-6 py-8 flex flex-col items-center justify-center relative">
 
-      <div className="text-center">
+      <div className="text-center w-full">
         <div className="absolute top-2 right-2">
           <button
             onClick={() => setShowEncrypted(!showEncrypted)}
