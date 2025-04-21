@@ -49,6 +49,7 @@ export interface CoreContextValue {
 	requestTestFunds: () => void;
 	truncateHash: (hash: string) => string;
 	setupKeyPair: (privateKey: bigint) => void;
+	connectStarknet: () => Promise<void>;
 }
 
 // Props Types

@@ -119,6 +119,17 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		localStorage.setItem('privacyKeyPair', privateKey.toString(16));
 	};
 
+	const connectStarknet = async () => {
+		if (!starknet) {
+			try {
+				const swo = await connect({ modalMode: 'alwaysAsk' });
+				setStarknet(swo);
+			} catch (e) {
+				console.error('Error occurred wile connecting to Starknet\n', e);
+			}
+		}
+	};
+
 
 	// Value object with all states and functions to be provided
 	const value = {
@@ -144,6 +155,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		truncateHash,
 		setupKeyPair,
 		balanceEnc,
+		connectStarknet,
 	};
 
 	return (
