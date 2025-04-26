@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState, ReactNode } from 'react';
-import { connect, disconnect } from 'get-starknet';
+import { connect, disconnect } from '@starknet-io/get-starknet';
 import { AccountInterface, Contract, TypedContractV2 } from 'starknet';
 import toast from 'react-hot-toast';
 import { VerifierABI, CoreABI } from './abi.ts';

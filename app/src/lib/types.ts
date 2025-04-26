@@ -2,6 +2,7 @@
 
 import { StarknetWindowObject } from '@starknet-io/get-starknet';
 import { ReactNode } from 'react';
+import { WalletAccount } from 'starknet';
 
 // ElGamal Cipher Text Type
 export interface Point {
@@ -23,28 +24,30 @@ export interface Notification {
 // Context Value Type
 export interface CoreContextValue {
 	// State
-	balance: string;
 	isLoading: boolean;
 	showEncrypted: boolean;
 	showOnboarding: boolean;
+	showTransfer: boolean;
+	showCreateKeyModal: boolean;
+
+	balance: string;
 	transferAmount: string;
 	recipient: string;
-	showTransfer: boolean;
 	notification: Notification | null;
 	balanceEnc: CipherText;
-	showCreateKeyModal: boolean;
 	keyPair: KeyPair;
 	starknet: StarknetWindowObject | null,
+	account: WalletAccount | null,
 
 	// State Setters
-	setBalance: (balance: string) => void;
 	setShowEncrypted: (show: boolean) => void;
 	setShowOnboarding: (show: boolean) => void;
+	setShowCreateKeyModal: (show: boolean) => void;
+	setShowTransfer: (show: boolean) => void;
+
 	setTransferAmount: (amount: string) => void;
 	setRecipient: (recipient: string) => void;
-	setShowTransfer: (show: boolean) => void;
 	setNotification: (notification: Notification | null) => void;
-	setShowCreateKeyModal: (show: boolean) => void;
 
 	// Functions
 	showNotification: (message: string, type?: 'success' | 'error') => void;
