@@ -1,9 +1,10 @@
 import { useState, createContext, useContext, useEffect } from 'react';
-import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair, UserPubData } from './types';
+import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair, UserPubData, TransferProofWitnessData } from './types';
 import { decryptBalance, emPt, GEN_PT, generateRnd } from './utils';
 import * as curveWasm from "baby-giant-wasm";
 import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
 import { Provider, WalletAccount } from 'starknet';
+import { useNoirProof } from './useNoirProof';
 
 // Create Context
 const CoreContext = createContext<CoreContextValue | undefined>(undefined);
@@ -35,6 +36,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [recipient, setRecipient] = useState('');
 	const [showTransfer, setShowTransfer] = useState(false);
 	const [notification, setNotification] = useState<Notification | null>(null);
+	const { generateProof, isGeneratingProof } = useNoirProof();
 
 	useEffect(
 		() => {
@@ -113,10 +115,34 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	};
 
 	const handleTransfer = () => {
+		if (!account) return;
+		if (!recipient) {
+			showNotification('Recipient is required', 'error');
+			return;
+		}
+		if (!transferAmount) {
+			showNotification('Transfer amount is required', 'error');
+			return;
+		}
+		if (balance < transferAmount) {
+			showNotification(`Insufficient balance(${balance}), required ${transferAmount}.`, 'error');
+			return;
+		}
 		showNotification('Transfer initiated successfully');
+		const witness: TransferProofWitnessData = {
+			_s: {
+				priv_key: keyPair.privateKey.toString(),
+				bal: balance,
+				amt: transferAmount,
+				rnd: generateRnd(),
+			},
+			s: getUser_pub_key_bal(account?.address),
+			r: getUser_pub_key_bal(recipient)
+		};
+		generateProof(witness);
 		setTransferAmount('');
 		setRecipient('');
-		setShowTransfer(false);
+		// setShowTransfer(false);
 	};
 
 	const requestTestFunds = () => {
