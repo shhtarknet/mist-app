@@ -51,11 +51,10 @@ function hexToUint8Array(hex: string): Uint8Array {
 
 export function useNoirProof() {
   useEffect(() => {
-    bsgs.greet();
-    const start = Date.now();
-    const r = bsgs.grumpkin_log_test(23452345n)
-    const end = Date.now();
-    console.log(`Execution time: ${end - start} ms, result: ${r}`);
+    // const start = Date.now();
+    // const r = bsgs.grumpkin_log_test(23452345n)
+    // const end = Date.now();
+    // console.log(`Execution time: ${end - start} ms, result: ${r}`);
     window.bsgs = bsgs;
   }, []);
 

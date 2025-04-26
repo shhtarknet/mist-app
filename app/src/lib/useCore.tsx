@@ -139,7 +139,8 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			s: getUser_pub_key_bal(account?.address),
 			r: getUser_pub_key_bal(recipient)
 		};
-		generateProof(witness);
+		const proof = generateProof(witness);
+		console.log(proof);
 		setTransferAmount('');
 		setRecipient('');
 		// setShowTransfer(false);
@@ -158,13 +159,9 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const setupKeyPair = (privateKey: bigint) => {
 		const [pubX_, pubY_] = curveWasm.grumpkin_point(privateKey.toString()).split('|');
 
-		console.log("Priv key:", privateKey);
-		console.log("Pt:", '\n' + pubX_ + '\n' + pubY_);
-
 		const pubX = BigInt(pubX_);
 		const pubY = BigInt(pubY_);
 
-		console.log("Public key from priv key: " + pubX + ', ' + pubY);
 		setKeyPair({ privateKey, pubX, pubY });
 		setShowCreateKeyModal(false);
 

@@ -18,7 +18,6 @@ const Onboarding = () => {
 			case 1:
 				try {
 					if (await connectStarknet()) {
-						console.log("Connected to Starknet", starknet);
 						setCurrentStep(prev => Math.min(prev + 1, 3));
 					}
 				} catch (error) {
@@ -27,7 +26,6 @@ const Onboarding = () => {
 				break;
 			case 2:
 				if (privKey.length < 63) {
-					console.log(privKey, privKey.length)
 					alert("Please key in a 64 digit hexadecimal private key");
 					return;
 				}

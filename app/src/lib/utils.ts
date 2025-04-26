@@ -3,8 +3,6 @@ import * as curveWasm from "baby-giant-wasm";
 
 export function decryptBalance(balEnc: CipherText, privateKey: string): string {
 
-	console.log(balEnc, privateKey);
-
 	if (0n == BigInt(balEnc.c2.x)) {
 		return '0.00';
 	}
@@ -19,11 +17,7 @@ export function decryptBalance(balEnc: CipherText, privateKey: string): string {
 
 	const [x, y] = balECPointEncoded.split('|');
 
-	console.log('Encoded balance Pt:', x, y);
-
 	const bal = curveWasm.grumpkin_bsgs_str(x, y).toString();
-
-	console.log('Balance:', bal);
 
 	return bal.substring(0, bal.length - 2) + '.' + bal.substring(bal.length - 2);
 }
