@@ -1,4 +1,4 @@
-import { CipherText } from "./types";
+import { CipherText, Point } from "./types";
 import * as curveWasm from "baby-giant-wasm";
 
 export function decryptBalance(balEnc: CipherText, privateKey: string): string {
@@ -29,6 +29,10 @@ export function decryptBalance(balEnc: CipherText, privateKey: string): string {
 }
 
 export function generatePrivateKey() {
+	return generateRnd()
+}
+
+export function generateRnd() {
 	const bitSize = 2 ** 48;
 
 	return BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
@@ -38,3 +42,10 @@ export function generatePrivateKey() {
 		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
 		BigInt(Math.floor(Math.random() * 2 ** 16)).toString(16)
 }
+
+export function emPt(x: string, y: string): Point {
+	return { x, y }
+}
+
+// Curve generator point, used for defaults
+export const GEN_PT: Point = { x: '0x01', y: '0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c' };

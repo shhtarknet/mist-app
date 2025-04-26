@@ -1,17 +1,12 @@
-import { InputMap } from "@noir-lang/noir_js";
 import { useNoirProof } from "../lib/useNoirProof";
 import { useEffect, useState } from "react";
 import * as Garaga from "garaga";
 import { transferVK } from '../circuits/transfer';
-import { Point, TransferProofWitnessData } from "../lib/types";
-
-function emPt(x: string, y: string): Point {
-	return { x, y }
-	// return { x, y, is_infinite: '0' }
-}
+import { TransferProofWitnessData } from "../lib/types";
+import { emPt } from "../lib/utils";
 
 export default function ProofPlayground() {
-	const { generateProof, isGenerating } = useNoirProof();
+	const { generateProof, isGeneratingProof } = useNoirProof();
 	const [proof, setProof] = useState<Uint8Array>();
 
 	useEffect(() => {
@@ -69,7 +64,7 @@ export default function ProofPlayground() {
 					setProof(proof);
 				}
 				}>
-				{proof ? 'Proof generated' : isGenerating ? 'Generating proof...' : 'Test proof gen'}
+				{proof ? 'Proof generated' : isGeneratingProof ? 'Generating proof...' : 'Test proof gen'}
 
 			</button>
 		</div >
