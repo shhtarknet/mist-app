@@ -27,7 +27,7 @@ export function generatePrivateKey() {
 }
 
 export function generateRnd() {
-	const bitSize = 2 ** 48;
+	const bitSize = 2 ** 45; // 253 bit numbers
 
 	return BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
 		BigInt(Math.floor(Math.random() * bitSize)).toString(16) +
@@ -42,4 +42,4 @@ export function emPt(x: string, y: string): Point {
 }
 
 // Curve generator point, used for defaults
-export const GEN_PT: Point = { x: '0x01', y: '0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c' };
+export const GEN_PT: Point = { x: BigInt('0x01').toString(), y: BigInt('0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c').toString() };

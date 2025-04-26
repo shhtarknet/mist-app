@@ -25,6 +25,7 @@ export interface Notification {
 export interface CoreContextValue {
 	// State
 	isLoading: boolean;
+	isGeneratingProof: boolean;
 	showEncrypted: boolean;
 	showOnboarding: boolean;
 	showTransfer: boolean;
@@ -51,7 +52,7 @@ export interface CoreContextValue {
 
 	// Functions
 	showNotification: (message: string, type?: 'success' | 'error') => void;
-	handleTransfer: (e: React.FormEvent) => void;
+	handleTransfer: () => void;
 	requestTestFunds: () => void;
 	truncateHash: (hash: string) => string;
 	setupKeyPair: (privateKey: bigint) => void;

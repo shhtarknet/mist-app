@@ -1,4 +1,4 @@
-import { Send, X } from "lucide-react";
+import { CircleDotDashed, Send, X } from "lucide-react";
 import { useCore } from "../lib/useCore";
 
 export const TransferModal = () => {
@@ -9,7 +9,8 @@ export const TransferModal = () => {
     setTransferAmount,
     recipient,
     setRecipient,
-    handleTransfer
+    handleTransfer,
+    isGeneratingProof
   } = useCore();
 
   if (!showTransfer) return null;
@@ -24,7 +25,7 @@ export const TransferModal = () => {
           </button>
         </div>
 
-        <form onSubmit={handleTransfer} className="p-6">
+        <form onSubmit={e => { e.preventDefault(); handleTransfer() }} className="p-6">
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Recipient Address</label>
@@ -57,8 +58,16 @@ export const TransferModal = () => {
                 type="submit"
                 className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center justify-center transition-colors"
               >
-                <Send size={18} className="mr-2" />
-                Send Transaction
+                {isGeneratingProof ?
+                  <>
+                    <CircleDotDashed size={18} className="mr-2 animate-spin" />
+                    Generating proof
+                  </> :
+                  <>
+                    <Send size={18} className="mr-2" />
+                    Send Transaction
+                  </>
+                }
               </button>
             </div>
           </div>

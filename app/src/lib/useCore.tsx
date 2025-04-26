@@ -78,10 +78,10 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	useEffect(
 		() => {
 			const encBal = {
-				c1: { x: '0x01', y: '0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c' },
+				c1: { x: BigInt('0x01').toString(), y: BigInt('0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c').toString() },
 				c2: {
-					x: '0x2b2498a183dcc09a383386afdb675194b6119738bdb97b63e470644e87e8ec2b',
-					y: '0x2c0878f1e4f3d042322a228806f39091db24037fbd87602442619c73107a372b',
+					x: BigInt('0x2b2498a183dcc09a383386afdb675194b6119738bdb97b63e470644e87e8ec2b').toString(),
+					y: BigInt('0x2c0878f1e4f3d042322a228806f39091db24037fbd87602442619c73107a372b').toString(),
 				},
 			};
 			setBalanceEnc(encBal);
@@ -97,7 +97,8 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		if (recipient == account?.address) {
 			return {
 				pub_key:
-					emPt(keyPair.pubX.toString(), keyPair.pubY.toString(),),
+					// emPt(keyPair.pubX.toString(), keyPair.pubY.toString(),),
+					GEN_PT,
 				bal_ct: [
 					emPt(balanceEnc.c1.x, balanceEnc.c1.y,),
 					emPt(balanceEnc.c2.x, balanceEnc.c2.y,),
@@ -114,7 +115,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		};
 	};
 
-	const handleTransfer = () => {
+	const handleTransfer = async () => {
 		if (!account) return;
 		if (!recipient) {
 			showNotification('Recipient is required', 'error');
@@ -131,18 +132,20 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		showNotification('Transfer initiated successfully');
 		const witness: TransferProofWitnessData = {
 			_s: {
-				priv_key: keyPair.privateKey.toString(),
-				bal: balance,
+				// priv_key: keyPair.privateKey.toString(),
+				priv_key: '1', // @TODO use correct key
+				bal: `${Math.round(parseFloat(balance) * 100)}`,
 				amt: transferAmount,
-				rnd: generateRnd(),
+				rnd: BigInt('0x' + generateRnd()).toString(),
 			},
 			s: getUser_pub_key_bal(account?.address),
 			r: getUser_pub_key_bal(recipient)
 		};
-		const proof = generateProof(witness);
+		console.log(witness);
+		const proof = await generateProof(witness);
 		console.log(proof);
-		setTransferAmount('');
-		setRecipient('');
+		// setTransferAmount('');
+		// setRecipient('');
 		// setShowTransfer(false);
 	};
 
@@ -191,6 +194,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const value = {
 		starknet,
 		isLoading,
+		isGeneratingProof,
 		balance,
 		setBalance,
 		account,
