@@ -1,6 +1,6 @@
 import { useState, createContext, useContext, useEffect } from 'react';
-import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair } from './types';
-import { decryptBalance } from './utils';
+import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair, UserPubData } from './types';
+import { decryptBalance, emPt, GEN_PT, generateRnd } from './utils';
 import * as curveWasm from "baby-giant-wasm";
 import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
 import { Provider, WalletAccount } from 'starknet';
@@ -86,22 +86,30 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		}, []
 	)
 
-	useEffect(
-		() => {
-			const encBal = {
-				c1: { x: '0x01', y: '0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c' },
-				c2: {
-					x: '0x2b2498a183dcc09a383386afdb675194b6119738bdb97b63e470644e87e8ec2b',
-					y: '0x2c0878f1e4f3d042322a228806f39091db24037fbd87602442619c73107a372b',
-				},
-			};
-			setBalanceEnc(encBal);
-		}, []
-	)
-
 	const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
 		setNotification({ message, type });
 		setTimeout(() => setNotification(null), 3000);
+	};
+
+	const getUser_pub_key_bal = (recipient: string): UserPubData => {
+		if (recipient == account?.address) {
+			return {
+				pub_key:
+					emPt(keyPair.pubX.toString(), keyPair.pubY.toString(),),
+				bal_ct: [
+					emPt(balanceEnc.c1.x, balanceEnc.c1.y,),
+					emPt(balanceEnc.c2.x, balanceEnc.c2.y,),
+				],
+			};
+		}
+		// @TODO get correct values
+		return {
+			pub_key: GEN_PT,
+			bal_ct: [
+				emPt('0', '0',), // 0 point is point at infinity, indicates zero balance
+				emPt('0', '0',), // 0 point is point at infinity, indicates zero balance
+			]
+		};
 	};
 
 	const handleTransfer = () => {
