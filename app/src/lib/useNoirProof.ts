@@ -5,6 +5,7 @@ import { ProgramCompilationArtifacts } from "@noir-lang/noir_wasm"
 import { InputMap, Noir } from '@noir-lang/noir_js';
 import { transferCircuit } from '../circuits/transfer';
 import * as bsgs from "baby-giant-wasm";
+import { TransferProofWitnessData } from './types';
 // import * as bsgs from "babyjubjub-utils";
 
 // declare helper functions
@@ -64,10 +65,10 @@ export function useNoirProof() {
   //     .catch(e => console.error("Failed to load WASMs", e));
   // }, []);
 
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingProof, setIsGeneratingProof] = useState(false);
 
-  const generateProof = useCallback(async (params: InputMap) => {
-    setIsGenerating(true);
+  const generateProof = useCallback(async (params: TransferProofWitnessData) => {
+    setIsGeneratingProof(true);
     const keccak = true;
     const proofType = keccak ? 'Keccak' : "Poseidon";
     try {
@@ -77,9 +78,9 @@ export function useNoirProof() {
       const backend = new UltraHonkBackend(programCompilation.program.bytecode);
 
       console.log(`Generating ${proofType} witness...`);
-      const { witness } = await noir.execute(params);
+      const { witness } = await noir.execute(params as unknown as InputMap);
 
-      console.log(`Generating ${proofType} proof...`);
+      console.log(`GeneratingProof ${proofType} proof...`);
       const proof = await backend.generateProof(witness, { keccak });
 
       const isValid = await backend.verifyProof(proof, { keccak });
@@ -94,12 +95,12 @@ export function useNoirProof() {
       toast.error('Failed to generate proof');
       throw error;
     } finally {
-      setIsGenerating(false);
+      setIsGeneratingProof(false);
     }
   }, []);
 
   return {
     generateProof,
-    isGenerating,
+    isGeneratingProof,
   };
 }

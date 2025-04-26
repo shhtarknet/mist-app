@@ -65,7 +65,7 @@ export default function ProofPlayground() {
 						}
 					};
 
-					const proof = await generateProof(data as unknown as InputMap);
+					const proof = await generateProof(data);
 					setProof(proof);
 				}
 				}>
