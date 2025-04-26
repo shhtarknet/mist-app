@@ -3,6 +3,7 @@ import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPai
 import { decryptBalance } from './utils';
 import * as curveWasm from "baby-giant-wasm";
 import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
+import { Provider, WalletAccount } from 'starknet';
 
 // Create Context
 const CoreContext = createContext<CoreContextValue | undefined>(undefined);
@@ -20,6 +21,7 @@ export const useCore = (): CoreContextValue => {
 export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [isLoading, setLoading] = useState(true);
 	const [starknet, setStarknet] = useState<StarknetWindowObject | null>(null);
+	const [account, setAccount] = useState<WalletAccount | null>(null);
 	const [balance, setBalance] = useState('');
 	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
 	const [showOnboarding, setShowOnboarding] = useState(false);
@@ -47,6 +49,20 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 				setLoading(false);
 			})();
 		}, []
+	)
+
+	useEffect(
+		() => {
+			(async () => {
+				if (starknet) {
+					const provider = new Provider({});
+					const myWalletAccount = await WalletAccount.connect(
+						provider, starknet
+					);
+					setAccount(myWalletAccount);
+				}
+			})();
+		}, [starknet]
 	)
 
 	useEffect(
@@ -146,6 +162,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		isLoading,
 		balance,
 		setBalance,
+		account,
 		showEncrypted,
 		setShowEncrypted,
 		showOnboarding,

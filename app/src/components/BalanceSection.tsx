@@ -1,4 +1,4 @@
-import { Copy, Eye, EyeOff, BadgeDollarSign } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useCore } from '../lib/useCore';
 import { EncryptedBalanceView } from './EncryptedBalanceView';
 import { ActionButtons } from './ActionButtons';
