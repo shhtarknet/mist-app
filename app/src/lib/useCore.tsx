@@ -1,7 +1,9 @@
 import { useState, createContext, useContext, useEffect } from 'react';
+import * as Garaga from "garaga";
+import * as curveWasm from "baby-giant-wasm";
+import { transferVK } from '../circuits/transfer';
 import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair, UserPubData, TransferProofWitnessData } from './types';
 import { decryptBalance, emPt, GEN_PT, generateRnd } from './utils';
-import * as curveWasm from "baby-giant-wasm";
 import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
 import { Provider, WalletAccount } from 'starknet';
 import { useNoirProof } from './useNoirProof';
@@ -21,6 +23,7 @@ export const useCore = (): CoreContextValue => {
 // Provider Component
 export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [isLoading, setLoading] = useState(true);
+	const [isGeneratingProof, setGeneratingProof] = useState(false);
 	const [starknet, setStarknet] = useState<StarknetWindowObject | null>(null);
 	const [account, setAccount] = useState<WalletAccount | null>(null);
 	const [balance, setBalance] = useState('');
@@ -28,19 +31,20 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [showOnboarding, setShowOnboarding] = useState(false);
 	const [keyPair, setKeyPair] = useState<KeyPair>({ privateKey: 0n, pubX: 0n, pubY: 0n, });
 	const [balanceEnc, setBalanceEnc] = useState<CipherText>({
-		c1: { x: '0x0', y: '0x0' },
-		c2: { x: '0x0', y: '0x0', },
+		c1: { x: '0', y: '0' },
+		c2: { x: '0', y: '0', },
 	});
 	const [showEncrypted, setShowEncrypted] = useState(false);
 	const [transferAmount, setTransferAmount] = useState('');
 	const [recipient, setRecipient] = useState('');
 	const [showTransfer, setShowTransfer] = useState(false);
 	const [notification, setNotification] = useState<Notification | null>(null);
-	const { generateProof, isGeneratingProof } = useNoirProof();
+	const { generateProof } = useNoirProof();
 
 	useEffect(
 		() => {
 			(async () => {
+				Garaga.init();
 				await connect({ modalMode: 'neverAsk' }).then((starknet) => {
 					setStarknet(starknet);
 				});
@@ -129,7 +133,8 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			showNotification(`Insufficient balance(${balance}), required ${transferAmount}.`, 'error');
 			return;
 		}
-		showNotification('Transfer initiated successfully');
+		setGeneratingProof(true)
+		// showNotification('Transfer initiated successfully');
 		const witness: TransferProofWitnessData = {
 			_s: {
 				// priv_key: keyPair.privateKey.toString(),
@@ -143,7 +148,12 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		};
 		console.log(witness);
 		const proof = await generateProof(witness);
-		console.log(proof);
+		const vk = Garaga.parseHonkVerifyingKeyFromBytes(transferVK);
+		const honk_proof = Garaga.parseHonkProofFromBytes(proof);
+		const calldata = Garaga.getHonkCallData(honk_proof, vk, 0);
+		setGeneratingProof(false)
+
+		console.log(calldata);
 		// setTransferAmount('');
 		// setRecipient('');
 		// setShowTransfer(false);
