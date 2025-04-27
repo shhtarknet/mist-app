@@ -2,10 +2,11 @@ import { useState, createContext, useContext, useEffect } from 'react';
 import * as Garaga from "garaga";
 import * as curveWasm from "baby-giant-wasm";
 import { transferVK } from '../circuits/transfer';
+import { VerifierABI, CoreABI } from './abi';
 import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair, UserPubData, TransferProofWitnessData } from './types';
-import { decryptBalance, emPt, GEN_PT, generateRnd } from './utils';
+import { CORE_ADDRESS, decryptBalance, emPt, GEN_PT, generateRnd } from './utils';
 import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
-import { Provider, WalletAccount } from 'starknet';
+import { Contract, Provider, TypedContractV2, WalletAccount } from 'starknet';
 import { getRawProof, useNoirProof } from './useNoirProof';
 
 // Create Context
@@ -22,11 +23,14 @@ export const useCore = (): CoreContextValue => {
 
 // Provider Component
 export const CoreProvider = ({ children }: WalletProviderProps) => {
+	const provider = new Provider({});
+
 	const [isLoading, setLoading] = useState(true);
 	const [isGeneratingProof, setGeneratingProof] = useState(false);
 	const [starknet, setStarknet] = useState<StarknetWindowObject | null>(null);
 	const [account, setAccount] = useState<WalletAccount | null>(null);
 	const [balance, setBalance] = useState('');
+	const [coreContract] = useState<TypedContractV2<typeof CoreABI>>(new Contract(CoreABI, CORE_ADDRESS, provider).typedv2(CoreABI))
 	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
 	const [showOnboarding, setShowOnboarding] = useState(false);
 	const [keyPair, setKeyPair] = useState<KeyPair>({ privateKey: 0n, pubX: 0n, pubY: 0n, });
@@ -61,10 +65,14 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		() => {
 			(async () => {
 				if (starknet) {
-					const provider = new Provider({});
 					const myWalletAccount = await WalletAccount.connect(
 						provider, starknet
 					);
+					myWalletAccount.getChainId().then((chainId) => {
+						console.log('Connected to Starknet chain:', chainId);
+					});
+
+
 					setAccount(myWalletAccount);
 				}
 			})();
@@ -109,6 +117,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 				],
 			};
 		}
+
 		// @TODO get correct values
 		return {
 			pub_key: GEN_PT,
@@ -231,6 +240,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		setupKeyPair,
 		balanceEnc,
 		connectStarknet,
+		coreContract,
 	};
 
 	return (

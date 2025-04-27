@@ -2,7 +2,8 @@
 
 import { StarknetWindowObject } from '@starknet-io/get-starknet';
 import { ReactNode } from 'react';
-import { WalletAccount } from 'starknet';
+import { TypedContractV2, WalletAccount } from 'starknet';
+import { CoreABI } from './abi';
 
 // ElGamal Cipher Text Type
 export interface Point {
@@ -37,8 +38,11 @@ export interface CoreContextValue {
 	notification: Notification | null;
 	balanceEnc: CipherText;
 	keyPair: KeyPair;
+
+	// Starknet stuff
 	starknet: StarknetWindowObject | null,
 	account: WalletAccount | null,
+	coreContract: TypedContractV2<typeof CoreABI>,
 
 	// State Setters
 	setShowEncrypted: (show: boolean) => void;
