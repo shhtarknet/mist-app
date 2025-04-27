@@ -5,7 +5,7 @@ import { useEffect } from "react";
 const StarknetModal = () => {
 	const { connectStarknet, keyPair, setShowOnboarding } = useCore();
 	useEffect(() => {
-		if (keyPair.pubX) {
+		if (!keyPair.pubX) {
 			setShowOnboarding(true);
 		}
 	}, [keyPair.pubX, setShowOnboarding]);

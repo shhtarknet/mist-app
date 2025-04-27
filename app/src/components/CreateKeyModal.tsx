@@ -71,9 +71,9 @@ const CreateKeyModal = () => {
 						</> :
 						<form onSubmit={(e) => {
 							e.preventDefault();
-							if (privateKey.length < 63) {
+							if (privateKey.length < 60) {
 								console.error(privateKey, privateKey.length)
-								alert("Please key in a 64 digit hexadecimal private key");
+								alert("Please key in a greater than 60 digit hexadecimal private key");
 								return;
 							}
 							setupKeyPair(BigInt('0x' + privateKey));

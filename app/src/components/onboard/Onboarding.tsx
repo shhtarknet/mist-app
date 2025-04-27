@@ -10,7 +10,7 @@ import { generatePrivateKey } from '../../lib/utils';
 
 const Onboarding = () => {
 	const [currentStep, setCurrentStep] = React.useState(1);
-	const { connectStarknet, starknet, setupKeyPair, setShowOnboarding, keyPair } = useCore();
+	const { connectStarknet, setupKeyPair, setShowOnboarding, keyPair } = useCore();
 	const [privKey, setPrivKey] = useState(keyPair.privateKey.toString(16));
 
 	const handleNext = async () => {
@@ -25,8 +25,8 @@ const Onboarding = () => {
 				}
 				break;
 			case 2:
-				if (privKey.length < 63) {
-					alert("Please key in a 64 digit hexadecimal private key");
+				if (privKey.length < 60) {
+					alert("Please key in a greater than 60 digit hexadecimal private key");
 					return;
 				}
 				if (confirm(
