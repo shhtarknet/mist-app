@@ -6,7 +6,7 @@ import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPai
 import { decryptBalance, emPt, GEN_PT, generateRnd } from './utils';
 import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
 import { Provider, WalletAccount } from 'starknet';
-import { useNoirProof } from './useNoirProof';
+import { getRawProof, useNoirProof } from './useNoirProof';
 
 // Create Context
 const CoreContext = createContext<CoreContextValue | undefined>(undefined);
@@ -146,14 +146,15 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			s: getUser_pub_key_bal(account?.address),
 			r: getUser_pub_key_bal(recipient)
 		};
-		console.log(witness);
 		const proof = await generateProof(witness);
+		const rawProof = await getRawProof(proof);
 		const vk = Garaga.parseHonkVerifyingKeyFromBytes(transferVK);
-		const honk_proof = Garaga.parseHonkProofFromBytes(proof);
+		const honk_proof = Garaga.parseHonkProofFromBytes(rawProof);
 		const calldata = Garaga.getHonkCallData(honk_proof, vk, 0);
 		setGeneratingProof(false)
 
-		console.log(calldata);
+		console.log(proof.publicInputs);
+		console.log('calldata length:', calldata.length);
 		// setTransferAmount('');
 		// setRecipient('');
 		// setShowTransfer(false);

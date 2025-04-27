@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { UltraHonkBackend, reconstructHonkProof } from '@aztec/bb.js';
+import { ProofData, UltraHonkBackend, reconstructHonkProof } from '@aztec/bb.js';
 import { ProgramCompilationArtifacts } from "@noir-lang/noir_wasm"
 import { InputMap, Noir } from '@noir-lang/noir_js';
 import { transferCircuit } from '../circuits/transfer';
@@ -44,6 +44,10 @@ function hexToUint8Array(hex: string): Uint8Array {
   return u8;
 }
 
+export const getRawProof = async (proof: ProofData): Promise<Uint8Array> => {
+  return reconstructHonkProof(flattenFieldsAsArray(proof.publicInputs), proof.proof);
+};
+
 // import initNoirC from "@noir-lang/noirc_abi";
 // import initACVM from "@noir-lang/acvm_js";
 // import acvm from "@noir-lang/acvm_js/web/acvm_js_bg.wasm?url";
@@ -65,8 +69,7 @@ export function useNoirProof() {
   // }, []);
 
   const [isGeneratingProof, setIsGeneratingProof] = useState(false);
-
-  const generateProof = useCallback(async (params: TransferProofWitnessData) => {
+  const generateProof = useCallback(async (params: TransferProofWitnessData): Promise<ProofData> => {
     setIsGeneratingProof(true);
     const keccak = true;
     const proofType = keccak ? 'Keccak' : "Poseidon";
@@ -87,8 +90,7 @@ export function useNoirProof() {
 
       console.log('Bytecode len: ', programCompilation.program.bytecode.length);
 
-      const rawproof = reconstructHonkProof(flattenFieldsAsArray(proof.publicInputs), proof.proof);
-      return rawproof;
+      return proof;
     } catch (error) {
       console.error('Failed to generate proof:', error);
       toast.error('Failed to generate proof');
