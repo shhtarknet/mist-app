@@ -62,8 +62,12 @@ export interface CoreContextValue {
 	handleTransfer: () => void;
 	requestTestFunds: () => void;
 	truncateHash: (hash: string) => string;
-	setupKeyPair: (privateKey: bigint) => void;
+	setupKeyPair: (privateKey: bigint) => boolean;
 	connectStarknet: () => Promise<boolean>;
+}
+
+export interface HasChildren {
+	children: ReactNode;
 }
 
 export interface WalletProviderProps {

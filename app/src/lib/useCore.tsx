@@ -6,7 +6,7 @@ import { CoreABI } from './abi';
 import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair, UserPubData, TransferProofWitnessData } from './types';
 import { CORE_ADDRESS, decryptBalance, emPt, GEN_PT, generateRnd } from './utils';
 import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
-import { constants, Contract, Provider, TypedContractV2, WalletAccount } from 'starknet';
+import { constants, Contract, Provider, WalletAccount } from 'starknet';
 import { getRawProof, useNoirProof } from './useNoirProof';
 
 // Create Context
@@ -169,9 +169,13 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	};
 
 	// Create and save a new key pair
-	const setupKeyPair = (privateKey: bigint) => {
+	const setupKeyPair = (privateKey: bigint): boolean => {
 		const [pubX_, pubY_] = curveWasm.grumpkin_point(privateKey.toString()).split('|');
 
+		if (keyPair.pubX.toString() !== pubX_ || keyPair.pubY.toString() !== pubY_) {
+			showNotification('Key pair doesn\'t match.', 'error');
+			return false;
+		}
 		const pubX = BigInt(pubX_);
 		const pubY = BigInt(pubY_);
 
@@ -181,6 +185,8 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		// In a real app, you would store this securely
 		// For demo purposes, we'll use localStorage
 		localStorage.setItem('privacyKeyPair', privateKey.toString(16));
+
+		return true;
 	};
 
 	const connectStarknet = async () => {

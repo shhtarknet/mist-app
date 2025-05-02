@@ -24,7 +24,7 @@ export const Header = ({ title, tagline, clean }: HeaderProps) => {
           </div>
         </div>
 
-        {keyPair.pubX.toString() && !clean && (
+        {keyPair.privateKey.toString() && !clean && (
           <button
             onClick={() => setShowCreateKeyModal(true)}
             className="text-xs text-blue-600 hover:text-blue-800 flex items-center"
