@@ -1,4 +1,5 @@
-import { CipherText, Point } from "./types";
+import { Uint256 } from "starknet";
+import { CipherText, GCipherText, GPoint, Point } from "./types";
 import * as curveWasm from "baby-giant-wasm";
 
 export function decryptBalance(balEnc: CipherText, privateKey: string): string {
@@ -40,6 +41,25 @@ export function generateRnd() {
 export function emPt(x: string, y: string): Point {
 	return { x, y }
 }
+
+export type ContractValue = number | bigint | Uint256;
+
+export const conv = {
+	point: function ({ x, y }: GPoint<ContractValue>): Point {
+		return {
+			x: String(x),
+			y: String(y)
+		}
+	},
+
+	// Convert contract bal_ct to stringified values for all x and y properties
+	cyphertext: function (balCt: GCipherText<ContractValue>): CipherText {
+		return {
+			c1: conv.point(balCt.c1),
+			c2: conv.point(balCt.c2),
+		};
+	},
+};
 
 // Curve generator point, used for defaults
 export const GEN_PT: Point = { x: BigInt('0x01').toString(), y: BigInt('0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c').toString() };
