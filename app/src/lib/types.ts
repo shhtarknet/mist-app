@@ -45,7 +45,7 @@ export interface CoreContextValue {
 	// Starknet stuff
 	starknet: StarknetWindowObject | null,
 	account: WalletAccount | null,
-	coreContract: TypedContractV2<typeof CoreABI>,
+	CoreContract: TypedContractV2<typeof CoreABI>,
 
 	// State Setters
 	setShowEncrypted: (show: boolean) => void;

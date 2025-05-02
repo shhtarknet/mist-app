@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useEffect } from 'react';
+import { useState, createContext, useContext, useEffect, useCallback } from 'react';
 import * as Garaga from "garaga";
 import * as curveWasm from "baby-giant-wasm";
 import { transferVK } from '../circuits/transfer';
@@ -6,7 +6,7 @@ import { CoreABI } from './abi';
 import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair, UserPubData, TransferProofWitnessData } from './types';
 import { CORE_ADDRESS, decryptBalance, emPt, GEN_PT, generateRnd } from './utils';
 import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
-import { Contract, Provider, TypedContractV2, WalletAccount } from 'starknet';
+import { constants, Contract, Provider, TypedContractV2, WalletAccount } from 'starknet';
 import { getRawProof, useNoirProof } from './useNoirProof';
 
 // Create Context
@@ -21,16 +21,19 @@ export const useCore = (): CoreContextValue => {
 	return ctx
 };
 
+const StarknetProvider = new Provider({
+	nodeUrl: constants.NetworkName.SN_MAIN,
+});
+const CoreContract = new Contract(CoreABI, CORE_ADDRESS, StarknetProvider).typedv2(CoreABI);
+
 // Provider Component
 export const CoreProvider = ({ children }: WalletProviderProps) => {
-	const provider = new Provider({});
 
 	const [isLoading, setLoading] = useState(true);
 	const [isGeneratingProof, setGeneratingProof] = useState(false);
 	const [starknet, setStarknet] = useState<StarknetWindowObject | null>(null);
 	const [account, setAccount] = useState<WalletAccount | null>(null);
 	const [balance, setBalance] = useState('');
-	const [coreContract] = useState<TypedContractV2<typeof CoreABI>>(new Contract(CoreABI, CORE_ADDRESS, provider).typedv2(CoreABI))
 	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
 	const [showOnboarding, setShowOnboarding] = useState(false);
 	const [keyPair, setKeyPair] = useState<KeyPair>({ privateKey: 0n, pubX: 0n, pubY: 0n, });
@@ -45,12 +48,30 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [notification, setNotification] = useState<Notification | null>(null);
 	const { generateProof } = useNoirProof();
 
+	const setupStarknet = useCallback(
+		async (starknet: StarknetWindowObject) => {
+			const myWalletAccount = await WalletAccount.connect(StarknetProvider, starknet);
+			myWalletAccount.getChainId().then((chainId) => {
+				console.log('Connected to Starknet chain:', chainId);
+			});
+			setAccount(myWalletAccount);
+			CoreContract.get_pub_params(myWalletAccount.address).then((res) => {
+				console.log(res);
+				setBalanceEnc(res.bal_ct as unknown as CipherText);
+				setKeyPair({ privateKey: 0n, pubX: res.pub_key.x as bigint, pubY: res.pub_key.x as bigint });
+			});
+		},
+		[],
+	);
+
+
 	useEffect(
 		() => {
 			(async () => {
 				Garaga.init();
 				await connect({ modalMode: 'neverAsk' }).then((starknet) => {
 					setStarknet(starknet);
+					if (starknet) setupStarknet(starknet);
 				});
 				const privKeyStr = window.localStorage.getItem('privacyKeyPair');
 				if (privKeyStr) {
@@ -58,25 +79,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 				}
 				setLoading(false);
 			})();
-		}, []
-	)
-
-	useEffect(
-		() => {
-			(async () => {
-				if (starknet) {
-					const myWalletAccount = await WalletAccount.connect(
-						provider, starknet
-					);
-					myWalletAccount.getChainId().then((chainId) => {
-						console.log('Connected to Starknet chain:', chainId);
-					});
-
-
-					setAccount(myWalletAccount);
-				}
-			})();
-		}, [starknet]
+		}, [setupStarknet]
 	)
 
 	useEffect(
@@ -85,19 +88,6 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			const key = '1'; // keyPair.privateKey;
 			setBalance(decryptBalance(balanceEnc, key))
 		}, [balanceEnc, keyPair]
-	)
-
-	useEffect(
-		() => {
-			const encBal = {
-				c1: { x: BigInt('0x01').toString(), y: BigInt('0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c').toString() },
-				c2: {
-					x: BigInt('0x2b2498a183dcc09a383386afdb675194b6119738bdb97b63e470644e87e8ec2b').toString(),
-					y: BigInt('0x2c0878f1e4f3d042322a228806f39091db24037fbd87602442619c73107a372b').toString(),
-				},
-			};
-			setBalanceEnc(encBal);
-		}, []
 	)
 
 	const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
@@ -201,6 +191,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			const swo = await connect({ modalMode: 'alwaysAsk', modalTheme: 'light' });
 			if (swo) {
 				setStarknet(swo);
+				if (swo) await setupStarknet(swo);
 				return true;
 			}
 		} catch (e) {
@@ -240,7 +231,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		setupKeyPair,
 		balanceEnc,
 		connectStarknet,
-		coreContract,
+		CoreContract,
 	};
 
 	return (
