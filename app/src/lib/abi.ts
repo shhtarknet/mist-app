@@ -106,7 +106,7 @@ export const CoreABI = [
 		]
 	},
 	{
-		"name": "confidential_erc20::Point",
+		"name": "confidential_erc20::types::Point",
 		"type": "struct",
 		"members": [
 			{
@@ -120,16 +120,30 @@ export const CoreABI = [
 		]
 	},
 	{
-		"name": "confidential_erc20::BalCypherText",
+		"name": "confidential_erc20::types::BalCypherText",
 		"type": "struct",
 		"members": [
 			{
 				"name": "c1",
-				"type": "confidential_erc20::Point"
+				"type": "confidential_erc20::types::Point"
 			},
 			{
 				"name": "c2",
-				"type": "confidential_erc20::Point"
+				"type": "confidential_erc20::types::Point"
+			}
+		]
+	},
+	{
+		"name": "confidential_erc20::types::UserPubParams",
+		"type": "struct",
+		"members": [
+			{
+				"name": "pub_key",
+				"type": "confidential_erc20::types::Point"
+			},
+			{
+				"name": "bal_ct",
+				"type": "confidential_erc20::types::BalCypherText"
 			}
 		]
 	},
@@ -158,7 +172,23 @@ export const CoreABI = [
 				],
 				"outputs": [
 					{
-						"type": "confidential_erc20::Point"
+						"type": "confidential_erc20::types::Point"
+					}
+				],
+				"state_mutability": "view"
+			},
+			{
+				"name": "get_pub_params",
+				"type": "function",
+				"inputs": [
+					{
+						"name": "account",
+						"type": "core::starknet::contract_address::ContractAddress"
+					}
+				],
+				"outputs": [
+					{
+						"type": "confidential_erc20::types::UserPubParams"
 					}
 				],
 				"state_mutability": "view"
@@ -169,7 +199,7 @@ export const CoreABI = [
 				"inputs": [
 					{
 						"name": "pub_key",
-						"type": "confidential_erc20::Point"
+						"type": "confidential_erc20::types::Point"
 					}
 				],
 				"outputs": [],
@@ -186,10 +216,17 @@ export const CoreABI = [
 				],
 				"outputs": [
 					{
-						"type": "confidential_erc20::BalCypherText"
+						"type": "confidential_erc20::types::BalCypherText"
 					}
 				],
 				"state_mutability": "view"
+			},
+			{
+				"name": "mint",
+				"type": "function",
+				"inputs": [],
+				"outputs": [],
+				"state_mutability": "external"
 			},
 			{
 				"name": "transfer",
@@ -198,10 +235,6 @@ export const CoreABI = [
 					{
 						"name": "recipient",
 						"type": "core::starknet::contract_address::ContractAddress"
-					},
-					{
-						"name": "amount",
-						"type": "confidential_erc20::BalCypherText"
 					},
 					{
 						"name": "proof",
@@ -214,7 +247,7 @@ export const CoreABI = [
 		]
 	},
 	{
-		"name": "confidential_erc20::VerifierDispatcher",
+		"name": "confidential_erc20::proof_stuff::VerifierDispatcher",
 		"type": "struct",
 		"members": [
 			{
@@ -229,7 +262,7 @@ export const CoreABI = [
 		"inputs": [
 			{
 				"name": "verifier",
-				"type": "confidential_erc20::VerifierDispatcher"
+				"type": "confidential_erc20::proof_stuff::VerifierDispatcher"
 			},
 			{
 				"name": "mint",
