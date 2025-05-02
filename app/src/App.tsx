@@ -4,9 +4,8 @@ import { Header } from './components/Header';
 import { BalanceSection } from './components/BalanceSection';
 import { Footer } from './components/Footer';
 import { TransferModal } from './components/TransferModal';
-import CreateKeyModal from './components/CreateKeyModal';
-import StarknetModal from './components/StarknetModal';
 import Onboarding from './components/onboard/Onboarding';
+import MyKeysModal from './components/MyKeysModal';
 
 // Component for Notification
 const Notification = () => {
@@ -28,7 +27,7 @@ const Notification = () => {
 };
 
 const AppContent = () => {
-  const { isLoading, starknet, showOnboarding } = useCore();
+  const { isLoading, starknet, showOnboarding, keyPair, showCreateKeyModal } = useCore();
 
   return <div className="relative w-full max-w-md">
     <Notification />
@@ -39,17 +38,19 @@ const AppContent = () => {
       showOnboarding ?
         <Onboarding /> :
         starknet ?
-          <>
-            <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
-              <Header />
-              <BalanceSection />
-              <Footer />
-            </div>
+          (!keyPair.privateKey && keyPair.privateKey == 0n) ?
+            <Onboarding step={2} /> :
+            <>
+              <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
+                <Header />
+                <BalanceSection />
+                <Footer />
+              </div>
+              <TransferModal />
+              {showCreateKeyModal && <MyKeysModal />}
 
-            <TransferModal />
-            <CreateKeyModal />
-          </> :
-          <StarknetModal />}
+            </> :
+          <Onboarding />}
   </div>;
 }
 

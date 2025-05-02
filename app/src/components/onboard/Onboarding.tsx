@@ -8,9 +8,13 @@ import { Header } from '../Header';
 import { useCore } from '../../lib/useCore';
 import { generatePrivateKey } from '../../lib/utils';
 
-const Onboarding = () => {
-	const [currentStep, setCurrentStep] = React.useState(1);
-	const { connectStarknet, setupKeyPair, setShowOnboarding, keyPair } = useCore();
+interface OnboardingProps {
+	step?: 1 | 2 | 3;
+}
+
+const Onboarding = ({ step }: OnboardingProps) => {
+	const [currentStep, setCurrentStep] = useState<number>(step || 1);
+	const { connectStarknet, setShowOnboarding, keyPair, setupKeyPair } = useCore();
 	const [privKey, setPrivKey] = useState(keyPair.privateKey.toString(16));
 
 	const handleNext = async () => {
@@ -18,7 +22,7 @@ const Onboarding = () => {
 			case 1:
 				try {
 					if (await connectStarknet()) {
-						setCurrentStep(prev => Math.min(prev + 1, 3));
+						setCurrentStep(!keyPair.privateKey ? 2 : 3);
 					}
 				} catch (error) {
 					console.error("Error connecting to Starknet:", error);
