@@ -44,4 +44,4 @@ export function emPt(x: string, y: string): Point {
 // Curve generator point, used for defaults
 export const GEN_PT: Point = { x: BigInt('0x01').toString(), y: BigInt('0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c').toString() };
 
-export const CORE_ADDRESS = '0x0483bbdb1b9bdc2cb233302675954836e8a8b5f4ab45bd1a1ee338ae6f996d29';
+export const CORE_ADDRESS = '0x0741e52afcc94aa93f849cbabc2d7b1c141895b497cd83357642edad933fc90b';

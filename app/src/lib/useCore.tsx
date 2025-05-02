@@ -2,7 +2,7 @@ import { useState, createContext, useContext, useEffect } from 'react';
 import * as Garaga from "garaga";
 import * as curveWasm from "baby-giant-wasm";
 import { transferVK } from '../circuits/transfer';
-import { VerifierABI, CoreABI } from './abi';
+import { CoreABI } from './abi';
 import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair, UserPubData, TransferProofWitnessData } from './types';
 import { CORE_ADDRESS, decryptBalance, emPt, GEN_PT, generateRnd } from './utils';
 import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
