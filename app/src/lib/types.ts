@@ -5,16 +5,19 @@ import { ReactNode } from 'react';
 import { TypedContractV2, WalletAccount } from 'starknet';
 import { CoreABI } from './abi';
 
-// ElGamal Cipher Text Type
-export interface Point {
-	x: string; // Corresponds to u256 in Rust
-	y: string; // Corresponds to u256 in Rust
+export interface GPoint<T> {
+	x: T; // Corresponds to u256 in Rust
+	y: T; // Corresponds to u256 in Rust
 };
 
-export interface CipherText {
-	c1: Point;
-	c2: Point;
+export type Point = GPoint<string>;
+
+export interface GCipherText<T> {
+	c1: GPoint<T>;
+	c2: GPoint<T>;
 }
+
+export type CipherText = GCipherText<string>;
 
 // Notification Type
 export interface Notification {
