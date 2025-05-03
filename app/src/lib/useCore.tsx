@@ -92,7 +92,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 
 	const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
 		setNotification({ message, type });
-		setTimeout(() => setNotification(null), 3000);
+		setTimeout(() => setNotification(null), 4000);
 	};
 
 	const getUser_pub_key_bal = (recipient: string): UserPubData => {
@@ -173,7 +173,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		const [pubX_, pubY_] = curveWasm.grumpkin_point(privateKey.toString()).split('|');
 
 		if (keyPair.pubX.toString() !== pubX_ || keyPair.pubY.toString() !== pubY_) {
-			showNotification('Key pair doesn\'t match.', 'error');
+			showNotification('Private Key doesn\'t match your public key.', 'error');
 			return false;
 		}
 		const pubX = BigInt(pubX_);
@@ -197,7 +197,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			const swo = await connect({ modalMode: 'alwaysAsk', modalTheme: 'light' });
 			if (swo) {
 				setStarknet(swo);
-				if (swo) await setupStarknet(swo);
+				await setupStarknet(swo);
 				return true;
 			}
 		} catch (e) {

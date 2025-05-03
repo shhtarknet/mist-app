@@ -1,4 +1,4 @@
-import { X, Check } from 'lucide-react';
+import { X } from 'lucide-react';
 import { CoreProvider, useCore } from './lib/useCore';
 import { Header } from './components/Header';
 import { BalanceSection } from './components/BalanceSection';
@@ -14,9 +14,8 @@ const Notification = () => {
   if (!notification) return null;
 
   return (
-    <div className={`absolute top-0 left-0 right-0 p-3 rounded-lg shadow-lg backdrop-blur-md bg-opacity-90 transform -translate-y-full mb-4 flex items-center justify-between ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+    <div className={`absolute top-0 left-0 right-0 p-3 rounded-lg shadow-lg backdrop-blur-md bg-opacity-90 mb-4 flex items-center justify-between ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
       <div className="flex items-center">
-        {notification.type === 'success' ? <Check size={18} className="mr-2 text-white" /> : <X size={18} className="mr-2 text-white" />}
         <span className="text-white">{notification.message}</span>
       </div>
       <button onClick={() => setNotification(null)} className="text-white">
@@ -48,9 +47,9 @@ const AppContent = () => {
               </div>
               <TransferModal />
               {showCreateKeyModal && <MyKeysModal />}
-
             </> :
-          <Onboarding />}
+          <Onboarding step={1} />
+    }
   </div>;
 }
 

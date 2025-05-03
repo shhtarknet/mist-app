@@ -1,5 +1,6 @@
 import { CircleDotDashed, Send, X } from "lucide-react";
 import { useCore } from "../lib/useCore";
+import { Modal } from "./Modal";
 
 export const TransferModal = () => {
   const {
@@ -16,68 +17,59 @@ export const TransferModal = () => {
   if (!showTransfer) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-10 p-4" style={{ boxShadow: '0 0 9990px 999px rgba(0, 0, 0, 0.4)' }}>
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
-        <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-800">Transfer Funds</h2>
-          <button onClick={() => setShowTransfer(false)} className="text-gray-500 hover:text-gray-800">
-            <X size={20} />
-          </button>
-        </div>
 
-        <form onSubmit={e => { e.preventDefault(); handleTransfer() }} className="p-6">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Recipient Address</label>
-              <input
-                type="text"
-                value={recipient}
-                onChange={(e) => setRecipient(e.target.value)}
-                placeholder="0x..."
-                className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Amount (USDT)</label>
-              <input
-                type="number"
-                value={transferAmount}
-                onChange={(e) => setTransferAmount(e.target.value)}
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-                className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-              />
-            </div>
-
-            <div className="pt-4">
-              <button
-                type="submit"
-                className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center justify-center transition-colors"
-              >
-                {isGeneratingProof ?
-                  <>
-                    <CircleDotDashed size={18} className="mr-2 animate-spin" />
-                    Generating proof
-                  </> :
-                  <>
-                    <Send size={18} className="mr-2" />
-                    Send Transaction
-                  </>
-                }
-              </button>
-            </div>
+    <Modal
+      footer="Transaction will be encrypted using ElGamal"
+      header="Transfer Funds"
+      onClose={() => { setShowTransfer(false) }}>
+      <form onSubmit={e => { e.preventDefault(); handleTransfer() }} className="p-6">
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Recipient Address</label>
+            <input
+              type="text"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              placeholder="0x..."
+              className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            />
           </div>
-        </form>
 
-        <div className="p-4 border-t border-gray-200 bg-gray-50">
-          <p className="text-xs text-gray-500 text-center">Transaction will be encrypted using ElGamal</p>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Amount (USDT)</label>
+            <input
+              type="number"
+              value={transferAmount}
+              onChange={(e) => setTransferAmount(e.target.value)}
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+              className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            />
+          </div>
+
+          <div className="pt-4">
+            <button
+              type="submit"
+              className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center justify-center transition-colors"
+            >
+              {isGeneratingProof ?
+                <>
+                  <CircleDotDashed size={18} className="mr-2 animate-spin" />
+                  Generating proof
+                </> :
+                <>
+                  <Send size={18} className="mr-2" />
+                  Send Transaction
+                </>
+              }
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
+      </form>
+    </Modal >
   );
 };
 

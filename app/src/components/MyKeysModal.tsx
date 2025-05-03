@@ -1,13 +1,10 @@
 import { Key } from "lucide-react";
 import { useCore } from "../lib/useCore";
-import { generatePrivateKey } from "../lib/utils";
-import { useState } from "react";
 import { disconnect } from "@starknet-io/get-starknet";
 import { Modal } from "./Modal";
 
 const MyKeysModal = () => {
-	const { showCreateKeyModal, setShowCreateKeyModal, setupKeyPair, keyPair, showNotification } = useCore();
-	const [privateKey, setSeed] = useState(generatePrivateKey());
+	const { showCreateKeyModal, setShowCreateKeyModal, keyPair } = useCore();
 
 	if (!showCreateKeyModal && keyPair.pubX) return null;
 
@@ -32,70 +29,38 @@ const MyKeysModal = () => {
 				</p>
 			</div>
 
-			{keyPair.pubX ?
-				<>
-					<div className="mb-3">
-						<label className="block text-xs font-medium text-gray-600 mb-1">Your public key</label>
-						<input
-							type="text"
-							value={keyPair.pubX.toString(16)}
-							className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-						/>
-					</div>
-					<div className="mb-3">
-						<label className="block text-xs font-medium text-gray-600 mb-1">Your private key</label>
-						<input
-							onFocus={(e => e.target.type = "text")}
-							onBlur={(e => e.target.type = "password")}
-							type="password"
-							value={keyPair.privateKey.toString(16)}
-							placeholder="0x..."
-							className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-						/>
-					</div>
-					<button
-						className="w-full mt-3 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center justify-center transition-colors"
-						onClick={() => setShowCreateKeyModal(false)}
-					>
-						Done
-					</button>
-					<button
-						className="w-full mt-3 py-3 px-4 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-medium flex items-center justify-center transition-colors"
-						onClick={async () => await disconnect()}
-					>
-						Disconnect wallet
-					</button>
-				</> :
-				<form onSubmit={(e) => {
-					e.preventDefault();
-					if (privateKey.length < 60) {
-						console.error(privateKey, privateKey.length)
-						alert("Please key in a greater than 60 digit hexadecimal private key");
-						return;
-					}
-					setupKeyPair(BigInt('0x' + privateKey));
-					showNotification('Key pair generated successfully');
+			<div className="mb-3">
+				<label className="block text-xs font-medium text-gray-600 mb-1">Your public key</label>
+				<input
+					type="text"
+					value={keyPair.pubX.toString(16)}
+					className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+				/>
+			</div>
+			<div className="mb-3">
+				<label className="block text-xs font-medium text-gray-600 mb-1">Your private key</label>
+				<input
+					onFocus={(e => e.target.type = "text")}
+					onBlur={(e => e.target.type = "password")}
+					type="password"
+					value={keyPair.privateKey.toString(16)}
+					placeholder="0x..."
+					className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+				/>
+			</div>
+			<button
+				className="w-full mt-3 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center justify-center transition-colors"
+				onClick={() => setShowCreateKeyModal(false)}
+			>
+				Done
+			</button>
+			<button
+				className="w-full mt-3 py-3 px-4 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-medium flex items-center justify-center transition-colors"
+				onClick={async () => await disconnect()}
+			>
+				Disconnect wallet
+			</button>
 
-				}}>
-					<div>
-						<label className="block text-xs font-medium text-gray-600 mb-1">Private Key</label>
-						<textarea
-							value={privateKey}
-							onChange={(e) => setSeed(e.target.value)}
-							placeholder="0x..."
-							className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-							required
-							minLength={64}
-						/>
-					</div>
-
-					<button
-						className="w-full mt-3 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center justify-center transition-colors"
-					>
-						<Key size={18} className="mr-2" />
-						Setup Key Pair
-					</button>
-				</form>}
 		</Modal>
 	);
 };
