@@ -179,7 +179,8 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		// setShowTransfer(false);
 	};
 
-	const requestTestFunds = () => {
+	const requestTestFunds = async () => {
+		await CoreContract.mint();
 		showNotification('Test funds requested successfully');
 	};
 

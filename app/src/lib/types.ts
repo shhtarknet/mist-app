@@ -61,7 +61,7 @@ export interface CoreContextValue {
 	// Functions
 	showNotification: (message: string, type?: 'success' | 'error') => void;
 	handleTransfer: () => void;
-	requestTestFunds: () => void;
+	requestTestFunds: () => Promise<void>;
 	truncateHash: (hash: string) => string;
 	setupKeyPair: (privateKey: bigint, pubKey: bigint, address: string) => Promise<boolean>;
 	connectStarknet: () => Promise<boolean>;
