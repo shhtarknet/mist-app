@@ -29,6 +29,7 @@ const AppContent = () => {
   const { isLoading, starknet, showOnboarding, privKey, showCreateKeyModal } = useCore();
 
   return <div className="relative w-full max-w-md">
+    {/* {privKey.toString(36)} */}
     <Notification />
     {isLoading ?
       <div className="flex items-center justify-center h-screen">
@@ -37,7 +38,7 @@ const AppContent = () => {
       showOnboarding ?
         <Onboarding /> :
         starknet ?
-          (privKey == 0n) ?
+          (privKey < 2n) ?
             <Onboarding step={2} /> :
             <>
               <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">

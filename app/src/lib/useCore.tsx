@@ -35,15 +35,15 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [starknet, setStarknet] = useState<StarknetWindowObject | null>(null);
 	const [account, setAccount] = useState<WalletAccount | null>(null);
 	const [balance, setBalance] = useState('');
-	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
-	const [showOnboarding, setShowOnboarding] = useState(false);
-	const [pubKey, setPubKey] = useState(0n);
-	const [pubKeyY, setPubKeyY] = useState(0n);
-	const [privKey, setPrivKey] = useState(0n);
 	const [balanceEnc, setBalanceEnc] = useState<CipherText>({
 		c1: { x: '0', y: '0' },
 		c2: { x: '0', y: '0', },
 	});
+	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
+	const [showOnboarding, setShowOnboarding] = useState(false);
+	const [privKey, setPrivKey] = useState(0n);
+	const [pubKey, setPubKey] = useState(0n);
+	const [pubKeyY, setPubKeyY] = useState(0n);
 	const [showEncrypted, setShowEncrypted] = useState(false);
 	const [transferAmount, setTransferAmount] = useState('');
 	const [recipient, setRecipient] = useState('');
@@ -52,7 +52,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const { generateProof } = useNoirProof();
 
 	// Create and save a new key pair
-	const setupKeyPair = useCallback(async (privateKey: bigint, pubX: bigint): Promise<boolean> => {
+	const setupKeyPair = useCallback(async (privateKey: bigint, pubX: bigint, account: string): Promise<boolean> => {
 		const [pubX_, pubY_] = curveWasm.grumpkin_point(privateKey.toString()).split('|');
 
 		if (pubX == 0n) {
@@ -66,50 +66,49 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			});
 		} else if (pubX.toString() !== pubX_) {
 			showNotification("Private Key doesn't match your public key.", 'error');
-			// console.log('Private Key:', privateKey);
-			console.log('Public Key:', pubX_, pubY_);
 			return false;
 		}
 		setPubKey(BigInt(pubX_));
 		setPubKeyY(BigInt(pubY_));
 		setPrivKey(privateKey);
 		setShowCreateKeyModal(false);
-		localStorage.setItem('privacyKeyPair', privateKey.toString(16));
+		localStorage.setItem('privK_' + account, privateKey.toString(16));
 		return true;
 	}, []);
 
 	const setupUserParams = useCallback(
 		async (address: string) => {
 			const userPubData = await getUser_pub_key_bal(address);
-			console.log('User pub data:', userPubData);
-			if (userPubData && userPubData.bal_ct) {
-				setBalanceEnc(userPubData.bal_ct);
-				setPubKey(BigInt(userPubData.pub_key.x));
-				setPubKeyY(BigInt(userPubData.pub_key.y));
-			}
+			setBalanceEnc(userPubData.bal_ct);
+			setPubKey(BigInt(userPubData.pub_key.x));
+			setPubKeyY(BigInt(userPubData.pub_key.y));
+			return userPubData;
 		}, []);
 
 	const setupStarknet = useCallback(
-		async (starknet: StarknetWindowObject) => {
+		async (starknet: StarknetWindowObject): Promise<[WalletAccount, UserPubData]> => {
 			const myWalletAccount = await WalletAccount.connect(StarknetProvider, starknet);
 			setAccount(myWalletAccount);
 			CoreContract = new Contract(CoreABI, CORE_ADDRESS, myWalletAccount).typedv2(CoreABI);
-			setupUserParams(myWalletAccount.address)
+			const userPubData = await setupUserParams(myWalletAccount.address)
+			const privKeyStr = localStorage.getItem('privK_' + myWalletAccount.address);
+			if (privKeyStr && myWalletAccount) {
+				await setupKeyPair(BigInt('0x' + privKeyStr), BigInt(userPubData.pub_key.x), myWalletAccount.address);
+			}
+
+			return [myWalletAccount, userPubData,];
 		},
-		[setupUserParams],
+		[setupKeyPair, setupUserParams],
 	);
 
 	useEffect(
 		() => {
 			(async () => {
 				Garaga.init();
-				await connect({ modalMode: 'neverAsk' }).then((starknet) => {
-					setStarknet(starknet);
-					if (starknet) setupStarknet(starknet);
-				});
-				const privKeyStr = window.localStorage.getItem('privacyKeyPair');
-				if (privKeyStr) {
-					await setupKeyPair(BigInt('0x' + privKeyStr), 0n)
+				const starknet_ = await connect({ modalMode: 'neverAsk' });
+				if (starknet_) {
+					setStarknet(starknet_);
+					await setupStarknet(starknet_);
 				}
 				setLoading(false);
 			})();
@@ -172,8 +171,9 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		const calldata = Garaga.getHonkCallData(honk_proof, vk, 0);
 		setGeneratingProof(false)
 
-		console.log(proof.publicInputs);
-		console.log('calldata length:', calldata.length);
+		console.log('Transfer proof:', proof);
+		console.log('Transfer calldata:', calldata);
+
 		// setTransferAmount('');
 		// setRecipient('');
 		// setShowTransfer(false);

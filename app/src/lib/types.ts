@@ -63,7 +63,7 @@ export interface CoreContextValue {
 	handleTransfer: () => void;
 	requestTestFunds: () => void;
 	truncateHash: (hash: string) => string;
-	setupKeyPair: (privateKey: bigint, pubKey: bigint) => Promise<boolean>;
+	setupKeyPair: (privateKey: bigint, pubKey: bigint, address: string) => Promise<boolean>;
 	connectStarknet: () => Promise<boolean>;
 }
 

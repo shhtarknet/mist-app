@@ -15,8 +15,9 @@ interface OnboardingProps {
 
 const Onboarding = ({ step }: OnboardingProps) => {
 	const [currentStep, setCurrentStep] = useState<number>(step || 1);
-	const { connectStarknet, setShowOnboarding, privKey: _privKey, pubKey, setupKeyPair } = useCore();
-	const [privKey, setPrivKey] = useState(_privKey.toString(16));
+	const { connectStarknet, setShowOnboarding, privKey: _privKey, account, pubKey, setupKeyPair } = useCore();
+	const privKeyStr = localStorage.getItem('privK_' + account?.address);
+	const [privKey, setPrivKey] = useState<string>(_privKey == 0n ? privKeyStr || '' : _privKey.toString(16));
 	const [processingMsg, setProcessingMsg] = useState('');
 
 	const handleNext = async () => {
@@ -24,7 +25,7 @@ const Onboarding = ({ step }: OnboardingProps) => {
 			case 1:
 				try {
 					if (await connectStarknet()) {
-						setCurrentStep(!privKey ? 2 : 3);
+						setCurrentStep(_privKey < 2n ? 2 : 3);
 					}
 				} catch (error) {
 					console.error("Error connecting to Starknet:", error);
@@ -40,9 +41,8 @@ const Onboarding = ({ step }: OnboardingProps) => {
 					"You won't be able to recover your funds if you lose it."
 				)) {
 					if (location.host.includes('localhost') || prompt("Key in your private key to proceed.")?.replace('0x', '') === privKey) {
-
 						setProcessingMsg("Please send the transaction from your wallet...");
-						if (await setupKeyPair(BigInt('0x' + privKey), pubKey)) {
+						if (await setupKeyPair(BigInt('0x' + privKey), pubKey, account?.address || '')) {
 							setProcessingMsg('');
 							setCurrentStep(prev => Math.min(prev + 1, 3));
 						}
@@ -62,7 +62,6 @@ const Onboarding = ({ step }: OnboardingProps) => {
 	};
 
 	const isNewAccount = 2n > pubKey;
-
 	return (
 		<MistContainer>
 			<Header

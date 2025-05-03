@@ -1,4 +1,4 @@
-import { Eye, EyeOff } from 'lucide-react';
+import { Coins, Eye, EyeOff } from 'lucide-react';
 import { useCore } from '../lib/useCore';
 import { EncryptedBalanceView } from './EncryptedBalanceView';
 import { ActionButtons } from './ActionButtons';
@@ -8,9 +8,9 @@ export const BalanceSection = () => {
   const { balance, showEncrypted, setShowEncrypted } = useCore();
 
   return (
-    <div className="px-6 py-8 flex flex-col items-center justify-center relative">
+    <div className="px-6 pt-4 pb-8 flex flex-col items-center justify-center relative">
 
-      <div className="text-center w-full h-40 flex flex-col items-center">
+      <div className="text-center w-full h-36 flex flex-col items-center">
         <div className="absolute top-2 right-2">
           <button
             onClick={() => setShowEncrypted(!showEncrypted)}
@@ -30,9 +30,12 @@ export const BalanceSection = () => {
             {/* <div className="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-blue-100 border border-blue-200">
               <BadgeDollarSign size={26} className="text-blue-600" />
             </div> */}
-            <div className="flex items-baseline justify-center m-auto">
-              <span className="text-4xl font-bold text-gray-800">{balance}</span>
-              <span className="ml-2 text-lg text-gray-500">USDT</span>
+            <div className="flex flex-col justify-center m-auto">
+              <div className="text-5xl font-light text-gray-800">
+                {/* <Coins /> */}
+                {balance}
+              </div>
+              <div className="ml-2 text-lg text-gray-500">TOKENS</div>
             </div>
           </div>
         ) : (
