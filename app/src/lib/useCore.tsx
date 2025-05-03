@@ -51,15 +51,12 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const setupStarknet = useCallback(
 		async (starknet: StarknetWindowObject) => {
 			const myWalletAccount = await WalletAccount.connect(StarknetProvider, starknet);
-			myWalletAccount.getChainId().then((chainId) => {
-				console.log('Connected to Starknet chain:', chainId);
-			});
 			setAccount(myWalletAccount);
-			CoreContract.get_pub_params(myWalletAccount.address).then((res) => {
-				console.log(res);
-				setBalanceEnc(res.bal_ct as unknown as CipherText);
-				setKeyPair({ privateKey: 0n, pubX: res.pub_key.x as bigint, pubY: res.pub_key.x as bigint });
-			});
+			const userPubData = await CoreContract.get_pub_params(myWalletAccount.address);
+			console.log(userPubData);
+			setBalanceEnc(userPubData.bal_ct as unknown as CipherText);
+			setKeyPair({ privateKey: 0n, pubX: userPubData.pub_key.x as bigint, pubY: userPubData.pub_key.x as bigint });
+
 		},
 		[],
 	);

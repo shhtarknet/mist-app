@@ -38,8 +38,9 @@ const Onboarding = ({ step }: OnboardingProps) => {
 					"You won't be able to recover your funds if you lose it."
 				)) {
 					if (prompt("What is your private key?")?.replace('0x', '') === privKey) {
-						setupKeyPair(BigInt('0x' + privKey));
-						setCurrentStep(prev => Math.min(prev + 1, 3));
+						if (setupKeyPair(BigInt('0x' + privKey))) {
+							setCurrentStep(prev => Math.min(prev + 1, 3));
+						}
 					}
 				}
 				break;
@@ -54,6 +55,8 @@ const Onboarding = ({ step }: OnboardingProps) => {
 	const handleBack = () => {
 		setCurrentStep(prev => Math.max(prev - 1, 1));
 	};
+
+	const isNewAccount = 2n > keyPair.pubX;
 
 	return (
 		<MistContainer>
@@ -72,8 +75,10 @@ const Onboarding = ({ step }: OnboardingProps) => {
 					postContent={currentStep === 2 ?
 						<div className='text-left'>
 							<label className="block text-xs font-medium text-gray-600 m-1">
-								Private Key
-								{!privKey && <button
+								{isNewAccount ?
+									"Register Private Key" :
+									"Private Key matching your Public Key"}
+								{!(privKey && privKey != '0') && <button
 									className="text-xs float-right text-blue-600 hover:underline ml-2"
 									onClick={() => setPrivKey(generatePrivateKey())}
 								>Generate</button>}
@@ -82,16 +87,15 @@ const Onboarding = ({ step }: OnboardingProps) => {
 								value={'0x' + privKey}
 								onChange={(e) => setPrivKey(e.target.value.replace(/0x/ig, ''))}
 								placeholder="0x..."
-								className="text-sm w-full font-mono bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								className="block text-sm w-full font-mono bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 								required
 								minLength={64}
 							/>
 						</div>
-						: undefined} />
-
-				<div className='pt-4' />
+						: <div className='pt-4' />} />
 
 				<ActionButton
+					label={currentStep === 2 ? (isNewAccount ? "Register New Keys" : "Match Keys") : undefined}
 					currentStep={currentStep}
 					onClick={handleNext}
 				/>

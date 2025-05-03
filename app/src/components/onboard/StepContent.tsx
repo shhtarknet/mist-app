@@ -11,8 +11,8 @@ export const StepContent = ({ currentStep, postContent }: StepContentProps) => {
 		},
 		{
 			icon: <Key size={40} className="text-blue-600" />,
-			title: "Step 2: Generate Encryption Keys",
-			description: "Now we need a private key for encryption, please keep this key safe, losing the key will result in loos of funds."
+			title: "Step 2: Encryption Keys",
+			description: "Encryption keys for private balance, keep the private key safe to avoid losing your funds."
 		},
 		{
 			icon: <Lock size={40} className="text-blue-600" />,
