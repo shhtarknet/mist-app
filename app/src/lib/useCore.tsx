@@ -78,20 +78,25 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		return true;
 	}, []);
 
-	const setupStarknet = useCallback(
-		async (starknet: StarknetWindowObject) => {
-			const myWalletAccount = await WalletAccount.connect(StarknetProvider, starknet);
-			setAccount(myWalletAccount);
-			CoreContract = new Contract(CoreABI, CORE_ADDRESS, myWalletAccount).typedv2(CoreABI);
-			const userPubData = await getUser_pub_key_bal(myWalletAccount.address);
+	const setupUserParams = useCallback(
+		async (address: string) => {
+			const userPubData = await getUser_pub_key_bal(address);
 			console.log('User pub data:', userPubData);
 			if (userPubData && userPubData.bal_ct) {
 				setBalanceEnc(userPubData.bal_ct);
 				setPubKey(BigInt(userPubData.pub_key.x));
 				setPubKeyY(BigInt(userPubData.pub_key.y));
 			}
+		}, []);
+
+	const setupStarknet = useCallback(
+		async (starknet: StarknetWindowObject) => {
+			const myWalletAccount = await WalletAccount.connect(StarknetProvider, starknet);
+			setAccount(myWalletAccount);
+			CoreContract = new Contract(CoreABI, CORE_ADDRESS, myWalletAccount).typedv2(CoreABI);
+			setupUserParams(myWalletAccount.address)
 		},
-		[],
+		[setupUserParams],
 	);
 
 	useEffect(

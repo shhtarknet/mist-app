@@ -7,6 +7,7 @@ import { StepNavigation } from './StepNavigation';
 import { Header } from '../Header';
 import { useCore } from '../../lib/useCore';
 import { generatePrivateKey } from '../../lib/utils';
+import { LoadingOverlay } from './LoadingOverlay.tsx';
 
 interface OnboardingProps {
 	step?: 1 | 2 | 3;
@@ -16,6 +17,7 @@ const Onboarding = ({ step }: OnboardingProps) => {
 	const [currentStep, setCurrentStep] = useState<number>(step || 1);
 	const { connectStarknet, setShowOnboarding, privKey: _privKey, pubKey, setupKeyPair } = useCore();
 	const [privKey, setPrivKey] = useState(_privKey.toString(16));
+	const [processingMsg, setProcessingMsg] = useState('');
 
 	const handleNext = async () => {
 		switch (currentStep) {
@@ -38,7 +40,10 @@ const Onboarding = ({ step }: OnboardingProps) => {
 					"You won't be able to recover your funds if you lose it."
 				)) {
 					if (location.host.includes('localhost') || prompt("Key in your private key to proceed.")?.replace('0x', '') === privKey) {
+
+						setProcessingMsg("Please send the transaction from your wallet...");
 						if (await setupKeyPair(BigInt('0x' + privKey), pubKey)) {
+							setProcessingMsg('');
 							setCurrentStep(prev => Math.min(prev + 1, 3));
 						}
 					}
@@ -67,6 +72,7 @@ const Onboarding = ({ step }: OnboardingProps) => {
 			/>
 
 			<div className="p-6">
+				<LoadingOverlay processingMsg={processingMsg} />
 				<StepIndicator currentStep={currentStep} totalSteps={3} />
 
 				<div className='pt-4' />
