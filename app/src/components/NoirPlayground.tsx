@@ -1,13 +1,14 @@
-import { useNoirProof } from "../lib/useNoirProof";
+import { getRawProof, useNoirProof } from "../lib/useNoirProof";
 import { useEffect, useState } from "react";
 import * as Garaga from "garaga";
 import { transferVK } from '../circuits/transfer';
 import { TransferProofWitnessData } from "../lib/types";
 import { emPt } from "../lib/utils";
+import { ProofData } from "@aztec/bb.js";
 
 export default function ProofPlayground() {
 	const { generateProof, isGeneratingProof } = useNoirProof();
-	const [proof, setProof] = useState<Uint8Array>();
+	const [proof, setProof] = useState<ProofData | null>(null);
 
 	useEffect(() => {
 		Garaga.init().then(() => {
@@ -17,17 +18,20 @@ export default function ProofPlayground() {
 	}, []);
 
 	useEffect(() => {
-		if (proof) {
-			try {
-				const vk = Garaga.parseHonkVerifyingKeyFromBytes(transferVK);
-				const honk_proof = Garaga.parseHonkProofFromBytes(proof);
-				const calldata = Garaga.getHonkCallData(honk_proof, vk, 0);
-				console.log('calldata', calldata.length);
-				console.log(calldata.map(bi => bi.toString()).join(', '));
-			} catch (e) {
-				console.error(e);
+		(async () => {
+			if (proof) {
+				try {
+					const vk = Garaga.parseHonkVerifyingKeyFromBytes(transferVK);
+					const rawProof = await getRawProof(proof);
+					const honk_proof = Garaga.parseHonkProofFromBytes(rawProof);
+					const calldata = Garaga.getHonkCallData(honk_proof, vk, 0);
+					console.log('calldata', calldata.length);
+					console.log(calldata.map(bi => bi.toString()).join(', '));
+				} catch (e) {
+					console.error(e);
+				}
 			}
-		}
+		})()
 	}, [proof]);
 
 	return (

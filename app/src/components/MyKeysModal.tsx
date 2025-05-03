@@ -4,9 +4,9 @@ import { disconnect } from "@starknet-io/get-starknet";
 import { Modal } from "./Modal";
 
 const MyKeysModal = () => {
-	const { showCreateKeyModal, setShowCreateKeyModal, keyPair } = useCore();
+	const { showCreateKeyModal, setShowCreateKeyModal, pubKey, privKey } = useCore();
 
-	if (!showCreateKeyModal && keyPair.pubX) return null;
+	if (!showCreateKeyModal && pubKey > 1n) return null;
 
 	return (
 		<Modal
@@ -33,7 +33,7 @@ const MyKeysModal = () => {
 				<label className="block text-xs font-medium text-gray-600 mb-1">Your public key</label>
 				<input
 					type="text"
-					value={keyPair.pubX.toString(16)}
+					value={pubKey.toString(16)}
 					className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 				/>
 			</div>
@@ -43,7 +43,7 @@ const MyKeysModal = () => {
 					onFocus={(e => e.target.type = "text")}
 					onBlur={(e => e.target.type = "password")}
 					type="password"
-					value={keyPair.privateKey.toString(16)}
+					value={privKey.toString(16)}
 					placeholder="0x..."
 					className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 				/>

@@ -10,7 +10,7 @@ export const BalanceSection = () => {
   return (
     <div className="px-6 py-8 flex flex-col items-center justify-center relative">
 
-      <div className="text-center w-full h-40">
+      <div className="text-center w-full h-40 flex flex-col items-center">
         <div className="absolute top-2 right-2">
           <button
             onClick={() => setShowEncrypted(!showEncrypted)}
@@ -25,12 +25,12 @@ export const BalanceSection = () => {
         </p>
 
         {!showEncrypted ? (
-          <div className="flex flex-col items-center">
-            <div className='h-8' />
+          <div className="flex flex-col items-center m-auto">
+            {/* <div className='h-8' /> */}
             {/* <div className="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-blue-100 border border-blue-200">
               <BadgeDollarSign size={26} className="text-blue-600" />
-              </div> */}
-            <div className="flex items-baseline justify-center">
+            </div> */}
+            <div className="flex items-baseline justify-center m-auto">
               <span className="text-4xl font-bold text-gray-800">{balance}</span>
               <span className="ml-2 text-lg text-gray-500">USDT</span>
             </div>

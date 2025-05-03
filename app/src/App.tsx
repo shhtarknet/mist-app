@@ -26,7 +26,7 @@ const Notification = () => {
 };
 
 const AppContent = () => {
-  const { isLoading, starknet, showOnboarding, keyPair, showCreateKeyModal } = useCore();
+  const { isLoading, starknet, showOnboarding, privKey, showCreateKeyModal } = useCore();
 
   return <div className="relative w-full max-w-md">
     <Notification />
@@ -37,7 +37,7 @@ const AppContent = () => {
       showOnboarding ?
         <Onboarding /> :
         starknet ?
-          (!keyPair.privateKey && keyPair.privateKey == 0n) ?
+          (privKey == 0n) ?
             <Onboarding step={2} /> :
             <>
               <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">

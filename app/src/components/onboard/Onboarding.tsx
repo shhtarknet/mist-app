@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { MistContainer } from './MistContainer';
 import { StepIndicator } from './StepIndicator';
 import { StepContent } from './StepContent';
@@ -14,15 +14,15 @@ interface OnboardingProps {
 
 const Onboarding = ({ step }: OnboardingProps) => {
 	const [currentStep, setCurrentStep] = useState<number>(step || 1);
-	const { connectStarknet, setShowOnboarding, keyPair, setupKeyPair } = useCore();
-	const [privKey, setPrivKey] = useState(keyPair.privateKey.toString(16));
+	const { connectStarknet, setShowOnboarding, privKey: _privKey, pubKey, setupKeyPair } = useCore();
+	const [privKey, setPrivKey] = useState(_privKey.toString(16));
 
 	const handleNext = async () => {
 		switch (currentStep) {
 			case 1:
 				try {
 					if (await connectStarknet()) {
-						setCurrentStep(!keyPair.privateKey ? 2 : 3);
+						setCurrentStep(!privKey ? 2 : 3);
 					}
 				} catch (error) {
 					console.error("Error connecting to Starknet:", error);
@@ -37,8 +37,8 @@ const Onboarding = ({ step }: OnboardingProps) => {
 					"Have you safely stored your private key?\n" +
 					"You won't be able to recover your funds if you lose it."
 				)) {
-					if (prompt("What is your private key?")?.replace('0x', '') === privKey) {
-						if (setupKeyPair(BigInt('0x' + privKey))) {
+					if (location.host.includes('localhost') || prompt("Key in your private key to proceed.")?.replace('0x', '') === privKey) {
+						if (await setupKeyPair(BigInt('0x' + privKey), pubKey)) {
 							setCurrentStep(prev => Math.min(prev + 1, 3));
 						}
 					}
@@ -56,7 +56,7 @@ const Onboarding = ({ step }: OnboardingProps) => {
 		setCurrentStep(prev => Math.max(prev - 1, 1));
 	};
 
-	const isNewAccount = 2n > keyPair.pubX;
+	const isNewAccount = 2n > pubKey;
 
 	return (
 		<MistContainer>

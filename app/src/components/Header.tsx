@@ -9,7 +9,7 @@ interface HeaderProps {
 
 // Component for Header Section
 export const Header = ({ title, tagline, clean }: HeaderProps) => {
-  const { keyPair, setShowCreateKeyModal } = useCore();
+  const { privKey, setShowCreateKeyModal } = useCore();
 
   return (
     <div className="p-6 pb-4 border-b border-gray-200">
@@ -24,7 +24,7 @@ export const Header = ({ title, tagline, clean }: HeaderProps) => {
           </div>
         </div>
 
-        {keyPair.privateKey.toString() && !clean && (
+        {privKey.toString() && !clean && (
           <button
             onClick={() => setShowCreateKeyModal(true)}
             className="text-xs text-blue-600 hover:text-blue-800 flex items-center"

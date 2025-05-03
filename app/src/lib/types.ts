@@ -40,7 +40,8 @@ export interface CoreContextValue {
 	recipient: string;
 	notification: Notification | null;
 	balanceEnc: CipherText;
-	keyPair: KeyPair;
+	pubKey: bigint;
+	privKey: bigint;
 
 	// Starknet stuff
 	starknet: StarknetWindowObject | null,
@@ -62,7 +63,7 @@ export interface CoreContextValue {
 	handleTransfer: () => void;
 	requestTestFunds: () => void;
 	truncateHash: (hash: string) => string;
-	setupKeyPair: (privateKey: bigint) => boolean;
+	setupKeyPair: (privateKey: bigint, pubKey: bigint) => Promise<boolean>;
 	connectStarknet: () => Promise<boolean>;
 }
 
@@ -83,7 +84,7 @@ export interface SecretValues {
 
 export interface UserPubData {
 	pub_key: Point;
-	bal_ct: Point[];
+	bal_ct: CipherText;
 }
 
 export interface TransferProofWitnessData {

@@ -53,7 +53,7 @@ export const conv = {
 	},
 
 	// Convert contract bal_ct to stringified values for all x and y properties
-	cyphertext: function (balCt: GCipherText<ContractValue>): CipherText {
+	ciphertext: function (balCt: GCipherText<ContractValue>): CipherText {
 		return {
 			c1: conv.point(balCt.c1),
 			c2: conv.point(balCt.c2),

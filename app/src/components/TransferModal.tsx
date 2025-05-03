@@ -1,4 +1,4 @@
-import { CircleDotDashed, Send, X } from "lucide-react";
+import { CircleDotDashed, Send } from "lucide-react";
 import { useCore } from "../lib/useCore";
 import { Modal } from "./Modal";
 

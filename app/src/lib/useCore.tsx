@@ -3,8 +3,8 @@ import * as Garaga from "garaga";
 import * as curveWasm from "baby-giant-wasm";
 import { transferVK } from '../circuits/transfer';
 import { CoreABI } from './abi';
-import { Notification, CoreContextValue, WalletProviderProps, CipherText, KeyPair, UserPubData, TransferProofWitnessData } from './types';
-import { CORE_ADDRESS, decryptBalance, emPt, GEN_PT, generateRnd } from './utils';
+import { Notification, CoreContextValue, WalletProviderProps, CipherText, UserPubData, TransferProofWitnessData } from './types';
+import { conv, CORE_ADDRESS, decryptBalance, generateRnd } from './utils';
 import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
 import { constants, Contract, Provider, WalletAccount } from 'starknet';
 import { getRawProof, useNoirProof } from './useNoirProof';
@@ -22,9 +22,10 @@ export const useCore = (): CoreContextValue => {
 };
 
 const StarknetProvider = new Provider({
-	nodeUrl: constants.NetworkName.SN_MAIN,
+	// nodeUrl: constants.NetworkName.SN_MAIN,
+	nodeUrl: 'https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_8/_y-36pr-k0TqKyUXuIml_tEcQMx_28N1',
 });
-const CoreContract = new Contract(CoreABI, CORE_ADDRESS, StarknetProvider).typedv2(CoreABI);
+let CoreContract = new Contract(CoreABI, CORE_ADDRESS, StarknetProvider).typedv2(CoreABI);
 
 // Provider Component
 export const CoreProvider = ({ children }: WalletProviderProps) => {
@@ -36,7 +37,8 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [balance, setBalance] = useState('');
 	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
 	const [showOnboarding, setShowOnboarding] = useState(false);
-	const [keyPair, setKeyPair] = useState<KeyPair>({ privateKey: 0n, pubX: 0n, pubY: 0n, });
+	const [pubKey, setPubKey] = useState(0n);
+	const [privKey, setPrivKey] = useState(0n);
 	const [balanceEnc, setBalanceEnc] = useState<CipherText>({
 		c1: { x: '0', y: '0' },
 		c2: { x: '0', y: '0', },
@@ -48,19 +50,48 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [notification, setNotification] = useState<Notification | null>(null);
 	const { generateProof } = useNoirProof();
 
+	// Create and save a new key pair
+	const setupKeyPair = useCallback(async (privateKey: bigint, pubX: bigint): Promise<boolean> => {
+		const [pubX_, pubY_] = curveWasm.grumpkin_point(privateKey.toString()).split('|');
+
+		if (pubX == 0n) {
+			pubX = BigInt(pubX_);
+		}
+
+		if (pubX == 1n) {
+			await CoreContract.set_pub_key({
+				x: pubX_,
+				y: pubY_,
+			});
+		} else if (pubX.toString() !== pubX_) {
+			showNotification("Private Key doesn't match your public key.", 'error');
+			// console.log('Private Key:', privateKey);
+			console.log('Public Key:', pubX_, pubY_);
+			return false;
+		}
+		pubX = BigInt(pubX_);
+
+		setPubKey(pubX);
+		setPrivKey(privateKey);
+		setShowCreateKeyModal(false);
+		localStorage.setItem('privacyKeyPair', privateKey.toString(16));
+		return true;
+	}, []);
+
 	const setupStarknet = useCallback(
 		async (starknet: StarknetWindowObject) => {
 			const myWalletAccount = await WalletAccount.connect(StarknetProvider, starknet);
 			setAccount(myWalletAccount);
-			const userPubData = await CoreContract.get_pub_params(myWalletAccount.address);
-			console.log(userPubData);
-			setBalanceEnc(userPubData.bal_ct as unknown as CipherText);
-			setKeyPair({ privateKey: 0n, pubX: userPubData.pub_key.x as bigint, pubY: userPubData.pub_key.x as bigint });
-
+			CoreContract = new Contract(CoreABI, CORE_ADDRESS, myWalletAccount).typedv2(CoreABI);
+			const userPubData = await getUser_pub_key_bal(myWalletAccount.address);
+			console.log('User pub data:', userPubData);
+			if (userPubData && userPubData.bal_ct) {
+				setBalanceEnc(userPubData.bal_ct);
+				setPubKey(BigInt(userPubData.pub_key.x));
+			}
 		},
 		[],
 	);
-
 
 	useEffect(
 		() => {
@@ -72,19 +103,18 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 				});
 				const privKeyStr = window.localStorage.getItem('privacyKeyPair');
 				if (privKeyStr) {
-					setupKeyPair(BigInt('0x' + privKeyStr))
+					await setupKeyPair(BigInt('0x' + privKeyStr), 0n)
 				}
 				setLoading(false);
 			})();
-		}, [setupStarknet]
+		}, [setupKeyPair, setupStarknet]
 	)
 
 	useEffect(
 		() => {
-			// TODO set correct key
-			const key = '1'; // keyPair.privateKey;
-			setBalance(decryptBalance(balanceEnc, key))
-		}, [balanceEnc, keyPair]
+			if (privKey < 1n || balanceEnc.c1.x == '0') return;
+			setBalance(decryptBalance(balanceEnc, privKey.toString()))
+		}, [balanceEnc, privKey]
 	)
 
 	const showNotification = (message: string, type: 'success' | 'error' = 'success') => {
@@ -92,27 +122,12 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		setTimeout(() => setNotification(null), 4000);
 	};
 
-	const getUser_pub_key_bal = (recipient: string): UserPubData => {
-		if (recipient == account?.address) {
-			return {
-				pub_key:
-					// emPt(keyPair.pubX.toString(), keyPair.pubY.toString(),),
-					GEN_PT,
-				bal_ct: [
-					emPt(balanceEnc.c1.x, balanceEnc.c1.y,),
-					emPt(balanceEnc.c2.x, balanceEnc.c2.y,),
-				],
-			};
-		}
-
-		// @TODO get correct values
+	const getUser_pub_key_bal = async (address: string): UserPubData => {
+		const userPubData = await CoreContract.get_pub_params(address);
 		return {
-			pub_key: GEN_PT,
-			bal_ct: [
-				emPt('0', '0',), // 0 point is point at infinity, indicates zero balance
-				emPt('0', '0',), // 0 point is point at infinity, indicates zero balance
-			]
-		};
+			pub_key: { x: String(userPubData.pub_key.x), y: String(userPubData.pub_key.y) },
+			bal_ct: conv.ciphertext(userPubData.bal_ct),
+		}
 	};
 
 	const handleTransfer = async () => {
@@ -133,7 +148,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		// showNotification('Transfer initiated successfully');
 		const witness: TransferProofWitnessData = {
 			_s: {
-				// priv_key: keyPair.privateKey.toString(),
+				// priv_key: privKey.toString(),
 				priv_key: '1', // @TODO use correct key
 				bal: `${Math.round(parseFloat(balance) * 100)}`,
 				amt: transferAmount,
@@ -163,27 +178,6 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const truncateHash = (hash: string) => {
 		if (!hash) return '';
 		return `${hash.substring(0, 6)}...${hash.substring(hash.length - 4)}`;
-	};
-
-	// Create and save a new key pair
-	const setupKeyPair = (privateKey: bigint): boolean => {
-		const [pubX_, pubY_] = curveWasm.grumpkin_point(privateKey.toString()).split('|');
-
-		if (keyPair.pubX.toString() !== pubX_ || keyPair.pubY.toString() !== pubY_) {
-			showNotification('Private Key doesn\'t match your public key.', 'error');
-			return false;
-		}
-		const pubX = BigInt(pubX_);
-		const pubY = BigInt(pubY_);
-
-		setKeyPair({ privateKey, pubX, pubY });
-		setShowCreateKeyModal(false);
-
-		// In a real app, you would store this securely
-		// For demo purposes, we'll use localStorage
-		localStorage.setItem('privacyKeyPair', privateKey.toString(16));
-
-		return true;
 	};
 
 	const connectStarknet = async () => {
@@ -226,7 +220,8 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		setNotification,
 		showCreateKeyModal,
 		setShowCreateKeyModal,
-		keyPair,
+		pubKey,
+		privKey,
 		showNotification,
 		handleTransfer,
 		requestTestFunds,
