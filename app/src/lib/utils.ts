@@ -59,6 +59,10 @@ export const conv = {
 			c2: conv.point(balCt.c2),
 		};
 	},
+	ciphertextFromAr: function (balCt: Point[]): CipherText {
+		const [c1, c2] = balCt;
+		return { c1, c2 };
+	},
 };
 
 // Curve generator point, used for defaults

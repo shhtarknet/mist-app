@@ -78,8 +78,8 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 
 	const setupUserParams = useCallback(
 		async (address: string) => {
-			const userPubData = await getUser_pub_key_bal(address);
-			setBalanceEnc(userPubData.bal_ct);
+			const userPubData = await getUserPubData(address);
+			setBalanceEnc(conv.ciphertextFromAr(userPubData.bal_ct));
 			setPubKey(BigInt(userPubData.pub_key.x));
 			setPubKeyY(BigInt(userPubData.pub_key.y));
 			return userPubData;
@@ -127,11 +127,12 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		setTimeout(() => setNotification(null), 4000);
 	};
 
-	const getUser_pub_key_bal = async (address: string): UserPubData => {
+	const getUserPubData = async (address: string): Promise<UserPubData> => {
 		const userPubData = await CoreContract.get_pub_params(address);
+		const bal_ct = conv.ciphertext(userPubData.bal_ct);
 		return {
 			pub_key: { x: String(userPubData.pub_key.x), y: String(userPubData.pub_key.y) },
-			bal_ct: conv.ciphertext(userPubData.bal_ct),
+			bal_ct: [bal_ct.c1, bal_ct.c2],
 		}
 	};
 
@@ -158,22 +159,30 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 				// priv_key: privKey.toString(),
 				priv_key: privKey.toString(), // @TODO use correct key
 				bal: `${Math.round(parseFloat(balance) * 100)}`,
-				amt: transferAmount,
+				amt: `${Math.floor(+transferAmount * 100)}`,
 				rnd: BigInt('0x' + generateRnd()).toString(),
 			},
-			s: getUser_pub_key_bal(account?.address),
-			r: getUser_pub_key_bal(recipient)
+			s: await getUserPubData(account?.address),
+			r: await getUserPubData(recipient)
 		};
-		const proof = await generateProof(witness);
-		const rawProof = await getRawProof(proof);
-		const vk = Garaga.parseHonkVerifyingKeyFromBytes(transferVK);
-		const honk_proof = Garaga.parseHonkProofFromBytes(rawProof);
-		const calldata = Garaga.getHonkCallData(honk_proof, vk, 0);
-		setGeneratingProof(false)
-
-		console.log('Transfer proof:', proof);
-		console.log('Transfer calldata:', calldata);
-
+		console.log('Transfer proof witness:', witness);
+		try {
+			const proof = await generateProof(witness);
+			const rawProof = await getRawProof(proof);
+			const vk = Garaga.parseHonkVerifyingKeyFromBytes(transferVK);
+			const honk_proof = Garaga.parseHonkProofFromBytes(rawProof);
+			const calldata = Garaga.getHonkCallData(honk_proof, vk, 0);
+			setGeneratingProof(false)
+			await CoreContract.transfer(
+				recipient,
+				calldata
+			);
+		} catch (error) {
+			console.error('Error generating proof:', error);
+			setGeneratingProof(false)
+			showNotification('Error generating proof', 'error');
+			return;
+		}
 		// setTransferAmount('');
 		// setRecipient('');
 		// setShowTransfer(false);

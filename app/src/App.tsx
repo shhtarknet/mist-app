@@ -14,7 +14,7 @@ const Notification = () => {
   if (!notification) return null;
 
   return (
-    <div className={`absolute top-0 left-0 right-0 p-3 rounded-lg shadow-lg backdrop-blur-md bg-opacity-90 mb-4 flex items-center justify-between ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+    <div className={`z-50 absolute top-0 left-0 right-0 p-3 rounded-lg shadow-lg backdrop-blur-md bg-opacity-90 mb-4 flex items-center justify-between ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
       <div className="flex items-center">
         <span className="text-white">{notification.message}</span>
       </div>
@@ -30,7 +30,6 @@ const AppContent = () => {
 
   return <div className="relative w-full max-w-md">
     {/* {privKey.toString(36)} */}
-    <Notification />
     {isLoading ?
       <div className="flex items-center justify-center h-screen">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
@@ -51,6 +50,7 @@ const AppContent = () => {
             </> :
           <Onboarding step={1} />
     }
+    <Notification />
   </div>;
 }
 

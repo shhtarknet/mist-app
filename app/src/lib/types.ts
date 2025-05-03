@@ -84,7 +84,7 @@ export interface SecretValues {
 
 export interface UserPubData {
 	pub_key: Point;
-	bal_ct: CipherText;
+	bal_ct: Point[];
 }
 
 export interface TransferProofWitnessData {
