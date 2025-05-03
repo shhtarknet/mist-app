@@ -38,6 +38,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [showCreateKeyModal, setShowCreateKeyModal] = useState(false);
 	const [showOnboarding, setShowOnboarding] = useState(false);
 	const [pubKey, setPubKey] = useState(0n);
+	const [pubKeyY, setPubKeyY] = useState(0n);
 	const [privKey, setPrivKey] = useState(0n);
 	const [balanceEnc, setBalanceEnc] = useState<CipherText>({
 		c1: { x: '0', y: '0' },
@@ -69,9 +70,8 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			console.log('Public Key:', pubX_, pubY_);
 			return false;
 		}
-		pubX = BigInt(pubX_);
-
-		setPubKey(pubX);
+		setPubKey(BigInt(pubX_));
+		setPubKeyY(BigInt(pubY_));
 		setPrivKey(privateKey);
 		setShowCreateKeyModal(false);
 		localStorage.setItem('privacyKeyPair', privateKey.toString(16));
@@ -88,6 +88,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			if (userPubData && userPubData.bal_ct) {
 				setBalanceEnc(userPubData.bal_ct);
 				setPubKey(BigInt(userPubData.pub_key.x));
+				setPubKeyY(BigInt(userPubData.pub_key.y));
 			}
 		},
 		[],
@@ -144,12 +145,14 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			showNotification(`Insufficient balance(${balance}), required ${transferAmount}.`, 'error');
 			return;
 		}
+
 		setGeneratingProof(true)
 		// showNotification('Transfer initiated successfully');
+
 		const witness: TransferProofWitnessData = {
 			_s: {
 				// priv_key: privKey.toString(),
-				priv_key: '1', // @TODO use correct key
+				priv_key: privKey.toString(), // @TODO use correct key
 				bal: `${Math.round(parseFloat(balance) * 100)}`,
 				amt: transferAmount,
 				rnd: BigInt('0x' + generateRnd()).toString(),
