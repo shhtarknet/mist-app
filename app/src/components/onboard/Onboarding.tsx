@@ -18,6 +18,8 @@ const Onboarding = ({ step }: OnboardingProps) => {
 	const { connectStarknet, setShowOnboarding, privKey: _privKey, account, pubKey, setupKeyPair } = useCore();
 	const privKeyStr = localStorage.getItem('privK_' + account?.address);
 	const [privKey, setPrivKey] = useState<string>(_privKey == 0n ? privKeyStr || '' : _privKey.toString(16));
+	const isNewAccount = 2n > pubKey;
+	const [noKey, setNoKey] = useState(isNewAccount && ['', '0'].includes(privKey));
 	const [processingMsg, setProcessingMsg] = useState('');
 
 	const handleNext = async () => {
@@ -32,6 +34,11 @@ const Onboarding = ({ step }: OnboardingProps) => {
 				}
 				break;
 			case 2:
+				if (noKey) {
+					setPrivKey(generatePrivateKey());
+					setNoKey(false);
+					return;
+				}
 				if (privKey.length < 60) {
 					alert("Please key in a greater than 60 digit hexadecimal private key");
 					return;
@@ -61,7 +68,6 @@ const Onboarding = ({ step }: OnboardingProps) => {
 		setCurrentStep(prev => Math.max(prev - 1, 1));
 	};
 
-	const isNewAccount = 2n > pubKey;
 	return (
 		<MistContainer>
 			<Header
@@ -81,26 +87,24 @@ const Onboarding = ({ step }: OnboardingProps) => {
 						<div className='text-left'>
 							<label className="block text-xs font-medium text-gray-600 m-1">
 								{isNewAccount ?
-									"Register Private Key" :
+									"Generate and Register Your Key Pair" :
 									"Private Key matching your Public Key"}
-								{!(privKey && privKey != '0') && <button
-									className="text-xs float-right text-blue-600 hover:underline ml-2"
-									onClick={() => setPrivKey(generatePrivateKey())}
-								>Generate</button>}
 							</label>
-							<textarea
-								value={'0x' + privKey}
-								onChange={(e) => setPrivKey(e.target.value.replace(/0x/ig, ''))}
-								placeholder="0x..."
-								className="block text-sm w-full font-mono bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								required
-								minLength={64}
-							/>
+							{noKey ?
+								<></> :
+								<textarea
+									value={'0x' + privKey}
+									onChange={(e) => setPrivKey(e.target.value.replace(/0x/ig, ''))}
+									placeholder="0x..."
+									className="block text-sm w-full font-mono bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									required
+									minLength={64}
+								/>}
 						</div>
 						: <div className='pt-4' />} />
 
 				<ActionButton
-					label={currentStep === 2 ? (isNewAccount ? "Register New Keys" : "Match Keys") : undefined}
+					label={currentStep === 2 ? (isNewAccount ? noKey ? "Generate Key" : "Register Key pair" : "Match Keys") : undefined}
 					currentStep={currentStep}
 					onClick={handleNext}
 				/>
