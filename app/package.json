@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "circuits": "node ./scripts/compile.js src/circuits",
-    "deploy": "gh-pages -d dist",
+    "deploy": "gh-pages -d dist --repo https://github.com/shhtarknet/mist",
     "lint": "eslint .",
     "preview": "vite preview"
   },
