@@ -22,7 +22,11 @@ export const TransferModal = () => {
       footer="Transaction will be encrypted using ElGamal"
       header="Transfer Funds"
       onClose={() => { setShowTransfer(false) }}>
-      <form onSubmit={e => { e.preventDefault(); handleTransfer() }} className="p-6">
+      <form onSubmit={async e => {
+        e.preventDefault();
+        handleTransfer();
+        setShowTransfer(false);
+      }} className="p-6">
         <div className="space-y-4">
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Recipient Address</label>

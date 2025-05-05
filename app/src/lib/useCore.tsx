@@ -106,10 +106,14 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		() => {
 			(async () => {
 				Garaga.init();
-				const starknet_ = await connect({ modalMode: 'neverAsk' });
-				if (starknet_) {
-					setStarknet(starknet_);
-					await setupStarknet(starknet_);
+				try {
+					const starknet_ = await connect({ modalMode: 'neverAsk' });
+					if (starknet_ && starknet_) {
+						setStarknet(starknet_);
+						await setupStarknet(starknet_);
+					}
+				} catch (e) {
+					console.error('Error occurred while connecting to Starknet\n', e);
 				}
 				setLoading(false);
 			})();
@@ -140,11 +144,18 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		}
 	};
 
-	const updateUserBalance = useCallback(async (address: string): Promise<UserPubData> => {
+	const updateUserBalance = useCallback(async (address: string): Promise<void> => {
 		const userBal = await CoreContract.balance_of(address);
 		const bal_ct = conv.ciphertext(userBal);
 		setBalanceEnc(bal_ct);
 	}, []);
+
+	const updateUserBalanceAnyhow = useCallback(async (): Promise<void> => {
+		if (account) {
+			setTimeout(() => updateUserBalance(account.address), 2500);
+			setTimeout(() => updateUserBalance(account.address), 4500);
+		}
+	}, [account, updateUserBalance]);
 
 	const handleTransfer = async () => {
 		if (!account) return;
@@ -198,6 +209,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			showNotification('Error generating proof', 'error');
 			return;
 		}
+		updateUserBalanceAnyhow();
 		// setTransferAmount('');
 		// setRecipient('');
 		// setShowTransfer(false);
@@ -206,13 +218,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const requestTestFunds = async () => {
 		await CoreContract.mint();
 		showNotification('Test funds requested successfully');
-		setTimeout(() => {
-			if (account) updateUserBalance(account?.address);
-		}, 2500);
-
-		setTimeout(() => {
-			if (account) updateUserBalance(account?.address);
-		}, 4000);
+		updateUserBalanceAnyhow();
 	};
 
 	const truncateHash = (hash: string) => {
