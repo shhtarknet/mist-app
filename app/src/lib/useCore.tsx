@@ -2,12 +2,12 @@ import { useState, createContext, useContext, useEffect, useCallback } from 'rea
 import * as Garaga from "garaga";
 import * as curveWasm from "baby-giant-wasm";
 import { transferVK } from '../circuits/transfer';
-import { CoreABI } from './abi';
+import { CoreABI, VerifierABI } from './abi';
 import { Notification, CoreContextValue, WalletProviderProps, CipherText, UserPubData, TransferProofWitnessData } from './types';
-import { conv, CORE_ADDRESS, decryptBalance, generateRnd } from './utils';
+import { conv, CORE_ADDRESS, decryptBalance, generateRnd, VERIFIER_ADDRESS } from './utils';
 import { connect, StarknetWindowObject } from '@starknet-io/get-starknet';
-import { constants, Contract, Provider, WalletAccount } from 'starknet';
-import { getRawProof, useNoirProof } from './useNoirProof';
+import { Contract, Provider, WalletAccount } from 'starknet';
+import { flattenFieldsAsArray, useNoirProof } from './useNoirProof';
 
 // Create Context
 const CoreContext = createContext<CoreContextValue | undefined>(undefined);
@@ -26,6 +26,7 @@ const StarknetProvider = new Provider({
 	nodeUrl: 'https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_8/_y-36pr-k0TqKyUXuIml_tEcQMx_28N1',
 });
 let CoreContract = new Contract(CoreABI, CORE_ADDRESS, StarknetProvider).typedv2(CoreABI);
+export const VerifierContract = new Contract(VerifierABI, VERIFIER_ADDRESS, StarknetProvider).typedv2(VerifierABI);
 
 // Provider Component
 export const CoreProvider = ({ children }: WalletProviderProps) => {
@@ -43,7 +44,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const [showOnboarding, setShowOnboarding] = useState(false);
 	const [privKey, setPrivKey] = useState(0n);
 	const [pubKey, setPubKey] = useState(0n);
-	const [pubKeyY, setPubKeyY] = useState(0n);
+	// const [pubKeyY, setPubKeyY] = useState(0n);
 	const [showEncrypted, setShowEncrypted] = useState(false);
 	const [transferAmount, setTransferAmount] = useState('');
 	const [recipient, setRecipient] = useState('');
@@ -69,7 +70,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			return false;
 		}
 		setPubKey(BigInt(pubX_));
-		setPubKeyY(BigInt(pubY_));
+		// setPubKeyY(BigInt(pubY_));
 		setPrivKey(privateKey);
 		setShowCreateKeyModal(false);
 		localStorage.setItem('privK_' + account, privateKey.toString(16));
@@ -81,7 +82,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			const userPubData = await getUserPubData(address);
 			setBalanceEnc(conv.ciphertextFromAr(userPubData.bal_ct));
 			setPubKey(BigInt(userPubData.pub_key.x));
-			setPubKeyY(BigInt(userPubData.pub_key.y));
+			// setPubKeyY(BigInt(userPubData.pub_key.y));
 			return userPubData;
 		}, []);
 
@@ -165,13 +166,18 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			s: await getUserPubData(account?.address),
 			r: await getUserPubData(recipient)
 		};
-		console.log('Transfer proof witness:', witness);
+		// console.log('Transfer proof witness:', witness);
 		try {
 			const proof = await generateProof(witness);
-			const rawProof = await getRawProof(proof);
-			const vk = Garaga.parseHonkVerifyingKeyFromBytes(transferVK);
-			const honk_proof = Garaga.parseHonkProofFromBytes(rawProof);
-			const calldata = Garaga.getHonkCallData(honk_proof, vk, 0);
+			// const rawProof = await getRawProof(proof);
+			// const vk = Garaga.parseHonkVerifyingKeyFromBytes(transferVK);
+			// const honk_proof = Garaga.parseHonkProofFromBytes(rawProof);
+			// const calldata = Garaga.getHonkCallData(honk_proof, vk, 0);
+			const calldata = Garaga.getZKHonkCallData(proof.proof, flattenFieldsAsArray(proof.publicInputs), transferVK, 0)
+			calldata.splice(0, 1);
+			const proof_result = await VerifierContract.verify_ultra_keccak_zk_honk_proof(calldata);
+			console.log('Proof result:', proof_result);
+
 			setGeneratingProof(false)
 			await CoreContract.transfer(
 				recipient,
