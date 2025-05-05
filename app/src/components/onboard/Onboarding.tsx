@@ -15,7 +15,7 @@ interface OnboardingProps {
 
 const Onboarding = ({ step }: OnboardingProps) => {
 	const [currentStep, setCurrentStep] = useState<number>(step || 1);
-	const { connectStarknet, setShowOnboarding, privKey: _privKey, account, pubKey, setupKeyPair } = useCore();
+	const { connectStarknet, setShowOnboarding, privKey: _privKey, account, pubKey, setupKeyPair, showNotification } = useCore();
 	const privKeyStr = localStorage.getItem('privK_' + account?.address);
 	const [privKey, setPrivKey] = useState<string>(_privKey == 0n ? privKeyStr || '' : _privKey.toString(16));
 	const isNewAccount = 2n > pubKey;
@@ -52,6 +52,8 @@ const Onboarding = ({ step }: OnboardingProps) => {
 						try {
 							if (await setupKeyPair(BigInt('0x' + privKey), pubKey, account?.address || '')) {
 								setCurrentStep(prev => Math.min(prev + 1, 3));
+							} else {
+								showNotification("Private Key doesn't match your public key.", 'error');
 							}
 						} catch (error) {
 							console.error("Error setting up key pair:", error);
@@ -96,7 +98,7 @@ const Onboarding = ({ step }: OnboardingProps) => {
 							</label>
 							{noKey ?
 								<></> :
-								<textarea
+								<input
 									value={'0x' + privKey}
 									onChange={(e) => setPrivKey(e.target.value.replace(/0x/ig, ''))}
 									placeholder="0x..."
