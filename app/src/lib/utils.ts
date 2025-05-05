@@ -68,4 +68,5 @@ export const conv = {
 // Curve generator point, used for defaults
 export const GEN_PT: Point = { x: BigInt('0x01').toString(), y: BigInt('0x02cf135e7506a45d632d270d45f1181294833fc48d823f272c').toString() };
 
-export const CORE_ADDRESS = '0x02aa3fa3aea753c56cfa1de6719ab7a27c6ad68b15c7cf0b88ec90e81c312bfa';
+export const CORE_ADDRESS = '0x054f441d0e9ebbbb3ff0c963a62fffb5374f7cb12347ac51e6ed33d0685f9475';
+export const VERIFIER_ADDRESS = '0x04d51d536c6542c2e2e67bc43cd78d3287231834bd88216efb2ca67e9f67d2f3';

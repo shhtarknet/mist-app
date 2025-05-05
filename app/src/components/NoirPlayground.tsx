@@ -1,4 +1,4 @@
-import { getRawProof, useNoirProof } from "../lib/useNoirProof";
+import { flattenFieldsAsArray, getRawProof, useNoirProof } from "../lib/useNoirProof";
 import { useEffect, useState } from "react";
 import * as Garaga from "garaga";
 import { transferVK } from '../circuits/transfer';
@@ -21,10 +21,8 @@ export default function ProofPlayground() {
 		(async () => {
 			if (proof) {
 				try {
-					const vk = Garaga.parseHonkVerifyingKeyFromBytes(transferVK);
-					const rawProof = await getRawProof(proof);
-					const honk_proof = Garaga.parseHonkProofFromBytes(rawProof);
-					const calldata = Garaga.getHonkCallData(honk_proof, vk, 0);
+					console.log('pub inputs u8', flattenFieldsAsArray(proof.publicInputs));
+					const calldata = Garaga.getZKHonkCallData(proof.proof, flattenFieldsAsArray(proof.publicInputs), transferVK, 0)
 					console.log('calldata', calldata.length);
 					console.log(calldata.map(bi => bi.toString()).join(', '));
 				} catch (e) {

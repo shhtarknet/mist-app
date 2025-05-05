@@ -71,8 +71,12 @@ export function useNoirProof() {
   const [isGeneratingProof, setIsGeneratingProof] = useState(false);
   const generateProof = useCallback(async (params: TransferProofWitnessData): Promise<ProofData> => {
     setIsGeneratingProof(true);
-    const keccak = true;
-    const proofType = keccak ? 'Keccak' : "Poseidon";
+    const backendOpts = { keccakZK: false, starknet: false, keccak: false };
+    backendOpts.keccakZK = true;
+    const proofType = backendOpts.starknet ? 'Starknet' : backendOpts.keccakZK ? 'KeccakZK' : "Keccak";
+    console.log(``);
+    console.log(`########### ${proofType} ###########\n`);
+
     try {
       const programCompilation = { ...transferCircuit, name: '' } as ProgramCompilationArtifacts;
 
@@ -83,13 +87,15 @@ export function useNoirProof() {
       const { witness } = await noir.execute(params as unknown as InputMap);
 
       console.log(`GeneratingProof ${proofType} proof...`);
-      const proof = await backend.generateProof(witness, { keccak });
+      const proof = await backend.generateProof(witness, backendOpts);
 
-      const isValid = await backend.verifyProof(proof, { keccak });
+      console.log(`Verifying Proof ${proofType} proof...`);
+      const isValid = await backend.verifyProof(proof, backendOpts);
+
+      console.log('pub inputs u8 length:', flattenFieldsAsArray(proof.publicInputs).length);
+      console.log('proof length:', proof.proof.length);
+
       console.log(`${proofType} Proof is ${isValid ? "valid ✅" : "invalid ⛔️"}...`);
-
-      console.log('Bytecode len: ', programCompilation.program.bytecode.length);
-
       return proof;
     } catch (error) {
       console.error('Failed to generate proof:', error);

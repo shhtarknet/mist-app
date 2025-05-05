@@ -72,14 +72,14 @@ function hexToUint8Array(hex) {
 	let proof = await backend.generateProof(witness, { keccak: true });
 	const rawproof = reconstructHonkProof(flattenFieldsAsArray(proof.publicInputs), proof.proof);
 	// bb.js doesn't allow setting keccak for getting vk (fixed in newer version)
-	const vk = await backend.api.acirWriteVkUltraKeccakHonk.bind(backend.api)(backend.acirUncompressedBytecode, backend.circuitOptions.recursive);
+	// const vk = await backend.api.acirWriteVkUltraKeccakHonk.bind(backend.api)(backend.acirUncompressedBytecode, backend.circuitOptions.recursive);
+	const vk = await backend.api.acirWriteVkUltraKeccakHonk(backend.acirUncompressedBytecode)
 
 	await writeFile(
 		outputPath + '/transfer.ts',
 		"// Auto-generated file" +
 		`\nexport const transferWitness = new Uint8Array([\n${witness}\n]);\n` +
 		`\nexport const transferVK = new Uint8Array([\n${vk}\n]);\n` +
-		`\nexport const transferRawProof = new Uint8Array([\n${rawproof}\n]);\n` +
 		`\nexport const transferProof = {` +
 		`\n\tpublicInputs: ${JSON.stringify(proof.publicInputs)},` +
 		`\n\tproof: new Uint8Array([\n${proof.proof}\n]),` +
