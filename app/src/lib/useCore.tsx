@@ -140,6 +140,12 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 		}
 	};
 
+	const updateUserBalance = useCallback(async (address: string): Promise<UserPubData> => {
+		const userBal = await CoreContract.balance_of(address);
+		const bal_ct = conv.ciphertext(userBal);
+		setBalanceEnc(bal_ct);
+	}, []);
+
 	const handleTransfer = async () => {
 		if (!account) return;
 		if (!recipient) {
@@ -200,6 +206,13 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 	const requestTestFunds = async () => {
 		await CoreContract.mint();
 		showNotification('Test funds requested successfully');
+		setTimeout(() => {
+			if (account) updateUserBalance(account?.address);
+		}, 2500);
+
+		setTimeout(() => {
+			if (account) updateUserBalance(account?.address);
+		}, 4000);
 	};
 
 	const truncateHash = (hash: string) => {
