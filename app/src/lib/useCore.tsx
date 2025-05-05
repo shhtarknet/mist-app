@@ -108,7 +108,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 				Garaga.init();
 				try {
 					const starknet_ = await connect({ modalMode: 'neverAsk' });
-					if (starknet_ && starknet_) {
+					if (starknet_) {
 						setStarknet(starknet_);
 						await setupStarknet(starknet_);
 					}

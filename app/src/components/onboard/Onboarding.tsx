@@ -49,8 +49,12 @@ const Onboarding = ({ step }: OnboardingProps) => {
 				)) {
 					if (location.host.includes('localhost') || prompt("Key in your private key to proceed.")?.replace('0x', '') === privKey) {
 						setProcessingMsg("Please send the transaction from your wallet...");
-						if (await setupKeyPair(BigInt('0x' + privKey), pubKey, account?.address || '')) {
-							setCurrentStep(prev => Math.min(prev + 1, 3));
+						try {
+							if (await setupKeyPair(BigInt('0x' + privKey), pubKey, account?.address || '')) {
+								setCurrentStep(prev => Math.min(prev + 1, 3));
+							}
+						} catch (error) {
+							console.error("Error setting up key pair:", error);
 						}
 						setProcessingMsg('');
 					}
