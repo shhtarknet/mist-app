@@ -20,6 +20,10 @@ export function decryptBalance(balEnc: CipherText, privateKey: string): string {
 
 	const bal = curveWasm.grumpkin_bsgs_str(x, y).toString();
 
+	if ('0' == bal) {
+		return '0.00';
+	}
+
 	return bal.substring(0, bal.length - 2) + '.' + bal.substring(bal.length - 2);
 }
 

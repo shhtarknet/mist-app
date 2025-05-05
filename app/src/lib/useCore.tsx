@@ -118,7 +118,10 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 
 	useEffect(
 		() => {
-			if (privKey < 1n || balanceEnc.c1.x == '0') return;
+			if (privKey < 1n || balanceEnc.c1.x == '0') {
+				setBalance('0.00');
+				return;
+			}
 			setBalance(decryptBalance(balanceEnc, privKey.toString()))
 		}, [balanceEnc, privKey]
 	)
