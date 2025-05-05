@@ -4,9 +4,9 @@ import { disconnect } from "@starknet-io/get-starknet";
 import { Modal } from "./Modal";
 
 const MyKeysModal = () => {
-	const { showCreateKeyModal, setShowCreateKeyModal, pubKey, privKey } = useCore();
+	const { showCreateKeyModal, setShowCreateKeyModal, account, privKey } = useCore();
 
-	if (!showCreateKeyModal && pubKey > 1n) return null;
+	if (!showCreateKeyModal) return null;
 
 	return (
 		<Modal
@@ -30,10 +30,10 @@ const MyKeysModal = () => {
 			</div>
 
 			<div className="mb-3">
-				<label className="block text-xs font-medium text-gray-600 mb-1">Your public key</label>
+				<label className="block text-xs font-medium text-gray-600 mb-1">Account address</label>
 				<input
 					type="text"
-					value={pubKey.toString(16)}
+					value={account?.address}
 					className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 				/>
 			</div>
