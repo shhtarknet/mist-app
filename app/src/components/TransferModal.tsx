@@ -24,7 +24,7 @@ export const TransferModal = () => {
       onClose={() => { setShowTransfer(false) }}>
       <form onSubmit={async e => {
         e.preventDefault();
-        handleTransfer();
+        await handleTransfer();
         setShowTransfer(false);
       }} className="p-6">
         <div className="space-y-4">

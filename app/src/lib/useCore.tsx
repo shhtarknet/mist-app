@@ -167,7 +167,7 @@ export const CoreProvider = ({ children }: WalletProviderProps) => {
 			showNotification('Transfer amount is required', 'error');
 			return;
 		}
-		if (balance < transferAmount) {
+		if (parseFloat(balance) < parseFloat(transferAmount)) {
 			showNotification(`Insufficient balance(${balance}), required ${transferAmount}.`, 'error');
 			return;
 		}
