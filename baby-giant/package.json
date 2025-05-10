@@ -1,0 +1,20 @@
+{
+  "name": "baby-giant-wasm",
+  "type": "module",
+  "collaborators": [
+    "Shramee Srivastav <shramee.srivastav@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "baby_giant_wasm_bg.wasm",
+    "baby_giant_wasm.js",
+    "baby_giant_wasm_bg.js",
+    "baby_giant_wasm.d.ts"
+  ],
+  "main": "baby_giant_wasm.js",
+  "types": "baby_giant_wasm.d.ts",
+  "sideEffects": [
+    "./baby_giant_wasm.js",
+    "./snippets/*"
+  ]
+}
