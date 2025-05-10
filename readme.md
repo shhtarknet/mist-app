@@ -8,6 +8,8 @@ Confidential token transfers using zero-knowledge proofs and homomorphic encrypt
 
 [![Check it out](media/check-it-out.gif)](https://shhtarknet.github.io/mist)
 
+Or, if you are lazy like us - [watch someone "Try the demo!" youtube.com/shorts/YfbM7zEPLno](https://www.youtube.com/shorts/YfbM7zEPLno)
+
 MIST enables private token transfers where transaction amounts and account balances remain encrypted. The system uses ElGamal homomorphic encryption over elliptic curves combined with zero-knowledge proofs to maintain privacy while ensuring transaction validity.
 
 ## NoirHack 2025
