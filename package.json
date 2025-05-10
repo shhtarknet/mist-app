@@ -1,0 +1,38 @@
+{
+	"name": "confidential-transfers",
+	"version": "1.0.0",
+	"description": "Privacy-preserving token transfer system on Starknet with encrypted balances and zero-knowledge proofs with Noir",
+	"private": true,
+	"author": {
+		"name": "Your Name",
+		"email": "your.email@example.com"
+	},
+	"scripts": {
+		"dev": "cd app && npm run dev",
+		"build": "cd app && npm run build",
+		"preview": "cd app && npm run preview",
+		"lint": "cd app && npm run lint",
+		"circuits": "cd app && npm run circuits",
+		"deploy": "cd app && npm run deploy"
+	},
+	"keywords": [
+		"starknet",
+		"noir",
+		"cairo",
+		"barretenberg",
+		"privacy",
+		"zero-knowledge",
+		"confidential-transfer",
+		"encrypted-balances",
+		"web3",
+		"dapp"
+	],
+	"homepage": "https://shhtarknet.github.io/mist/",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/shhtarknet/mist-app"
+	},
+	"bugs": {
+		"url": "https://github.com/shhtarknet/mist-app/issues"
+	}
+}
