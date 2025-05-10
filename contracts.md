@@ -1,6 +1,6 @@
 # Confidential Token Transfer System on Starknet
 
-This repository contains smart contracts for a privacy-preserving token transfer system deployed on Starknet. The system enables confidential transfers where token balances and transfer amounts remain encrypted on-chain.
+Smart contracts for a privacy-preserving token transfer system deployed on Starknet. The system enables confidential transfers where token balances and transfer amounts remain encrypted on-chain.
 
 ## Overview
 
