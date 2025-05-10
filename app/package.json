@@ -1,5 +1,5 @@
 {
-  "name": "vite-react-typescript-starter",
+  "name": "mist-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,13 +12,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aztec/bb.js": "link:/Users/shramee/www/crypto/aztec-packages/barretenberg/ts",
+    "@aztec/bb.js": "link:./bb-variant",
     "@noir-lang/acvm_js": "1.0.0-beta.3",
     "@noir-lang/noir_js": "1.0.0-beta.3",
     "@noir-lang/noir_wasm": "1.0.0-beta.3",
     "@noir-lang/noirc_abi": "1.0.0-beta.3",
     "@starknet-io/get-starknet": "^4.0.7",
-    "baby-giant-wasm": "link:/Users/shramee/www/crypto/baby_giant/crates/wasm/pkg",
+    "baby-giant-wasm": "link:./baby-giant",
     "clsx": "^2.1.0",
     "garaga": "^0.17.0",
     "lucide-react": "^0.344.0",
