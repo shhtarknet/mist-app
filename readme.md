@@ -51,6 +51,7 @@ Noir circuits implementing the confidential transaction system. Allows users to 
 StarkNet contracts for MIST written in Cairo. Handles on-chain state management, proof verification, and encrypted balance updates.
 
 ### Cryptography
+Implementation from [https://github.com/shramee/noir-v1-elgamal/blob/main/README.md](https://github.com/shramee/noir-v1-elgamal/blob/main/README.md)
 [Detailed Cryptography readme](cryptography.md)
 ElGamal cryptosystem on elliptic curves for additive homomorphism. Covers the mathematical foundations of ElGamal, its adaptation to elliptic curve groups, and implementation in Noir.
 
